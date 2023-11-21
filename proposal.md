@@ -8,6 +8,7 @@ project will be a tetris clone
 - Have lines be cleared when filled
 - Marathon mode
 - Score counter 
+- Start Screen
 
 # Nice to have
 - Background music
