@@ -10,6 +10,8 @@ let grid;
 let GRID_HEIGHT = 20;
 let GRID_WIDTH = 10;
 let cellSize;
+let I_PIECE, T_PIECE, L_PIECE, J_PIECE, S_PIECE, Z_PIECE, O_PIECE;
+
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -17,7 +19,7 @@ function setup() {
     cellSize = width/GRID_HEIGHT;  //Setting sizes based on window
   }
   else {
-    cellSize = height/GRID_WIDTH;
+    cellSize = height/GRID_HEIGHT;
   }
   grid = createGrid();
 }
@@ -29,9 +31,9 @@ function draw() {
 
 function createGrid(){
   let theGrid = [];
-  for(let cols = 1; cols < GRID_HEIGHT; cols ++){
+  for(let cols = 0; cols < GRID_HEIGHT; cols ++){
     theGrid.push([]);
-    for(let rows = 1; rows < GRID_WIDTH; rows ++){
+    for(let rows = 0; rows < GRID_WIDTH; rows ++){
       theGrid[cols].push(0);
     }
   }
@@ -39,8 +41,8 @@ function createGrid(){
 }
 
 function displayGrid(){
-  for ( let cols = 1; cols <= GRID_HEIGHT; cols++){
-    for(let rows = 1; rows <= GRID_WIDTH; rows ++){
+  for ( let cols = 0; cols <= GRID_HEIGHT; cols++){
+    for(let rows = 0; rows <= GRID_WIDTH; rows ++){
       if(grid[cols][rows] === 0){
         fill("grey");
         rect(rows*cellSize,cols*cellSize,cellSize,cellSize);
