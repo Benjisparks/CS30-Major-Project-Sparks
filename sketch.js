@@ -10,8 +10,29 @@ let grid;
 let GRID_HEIGHT = 20;
 let GRID_WIDTH = 10;
 let cellSize;
-let I_PIECE, T_PIECE, L_PIECE, J_PIECE, S_PIECE, Z_PIECE, O_PIECE;
 
+class Tetromino {
+  constructor(gridY,gridX){
+    this.y = gridY;
+    this.x = gridX;
+  }
+
+  update(){
+
+  }
+
+  rotateCw(){
+
+  }
+
+  rotateCcw(){
+
+  }
+
+  display(){
+
+  }
+}
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
