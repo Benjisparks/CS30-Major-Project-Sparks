@@ -11,10 +11,15 @@ let GRID_HEIGHT = 20;
 let GRID_WIDTH = 10;
 let cellSize;
 
+let I_TEMPLATE = [1,1,1,1];
+let O_TEMPLATE = [[1,1],[1,1]];
+let T_TEMPLATE = [[0,1,0],[1,1,1]];
+
 class Tetromino {
-  constructor(gridY,gridX){
+  constructor(gridY,gridX, template){
     this.y = gridY;
     this.x = gridX;
+    this.template = template;
   }
 
   update(){
@@ -22,7 +27,7 @@ class Tetromino {
   }
 
   rotateCw(){
-
+    
   }
 
   rotateCcw(){
@@ -33,6 +38,37 @@ class Tetromino {
 
   }
 }
+
+class I_piece extends Tetromino {
+  constructor(x,y){
+    super(x,y);
+    this.template = I_TEMPLATE;
+  }
+  update(){
+    super.update();
+  }
+
+  rotateCw(){
+    super.rotateCw();
+  }
+
+  rotateCcw(){
+    super.rotateCcw();
+  }
+
+  display(){
+    super.display();
+  }
+}
+
+class O_piece extends Tetromino {
+  constructor(x,y){
+    super(x,y);
+    this.template = O_TEMPLATE;
+  }
+}
+
+
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
