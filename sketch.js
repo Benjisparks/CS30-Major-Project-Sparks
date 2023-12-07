@@ -11,6 +11,7 @@ let theGame;
 let GRID_HEIGHT = 20;
 let GRID_WIDTH = 10;
 let cellSize;
+let mainFont;
 
 let I_TEMPLATE = [1,1,1,1];
 let O_TEMPLATE = [[1,1],[1,1]];
@@ -21,7 +22,7 @@ let L_TEMPLATE = [[1,0],[1,0],[1,1]];
 let J_TEMPLATE = [[1,1,],[1,0],[1,0]];
 
 function preload(){
-
+  mainFont = loadFont("Tetris.ttf");
 }
 
 function setup() {
@@ -44,6 +45,8 @@ function draw() {
 class Tetris{
   constructor(){
     this.screen = "menu";
+    this.score = 0;
+    this.level = 1;
   }
   createGrid(){
     let theGrid = [];
@@ -73,7 +76,8 @@ class Tetris{
   }
   
   mainMenu(){
-
+    background("grey");
+    
   }
 
   
