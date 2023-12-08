@@ -12,6 +12,7 @@ let GRID_HEIGHT = 20;
 let GRID_WIDTH = 10;
 let cellSize;
 let mainFont;
+let temp; 
 
 let I_TEMPLATE = [1,1,1,1];
 let O_TEMPLATE = [[1,1],[1,1]];
@@ -34,12 +35,15 @@ function setup() {
     cellSize = height/GRID_HEIGHT;
   }
   theGame = new Tetris();
+  temp = new Tetromino(1,3,I_TEMPLATE);
   grid = theGame.createGrid();
+  temp.tempInsert();
 }
 
 function draw() {
   background(220);
   theGame.displayGrid();
+  //theGame.runGame();
 }
 
 class Tetris{
@@ -66,6 +70,10 @@ class Tetris{
           fill("grey");
           rect(rows*cellSize,cols*cellSize,cellSize,cellSize);
         }
+        else if( grid[cols][rows] === 1){
+          fill("blue");
+          rect(rows*cellSize,cols*cellSize,cellSize,cellSize);
+        }
       }
     }
   }
@@ -77,7 +85,10 @@ class Tetris{
   
   mainMenu(){
     background("grey");
-    
+    textFont(mainFont);
+    textSize(width/16);
+    textAlign("center");
+    text("k T h",width/2,height/2);
   }
 
   
@@ -88,6 +99,14 @@ class Tetromino {
     this.y = gridY;
     this.x = gridX;
     this.template = template;
+  }
+
+  tempInsert(){
+    for(let cols = 0; cols <= I_TEMPLATE.length; cols++){
+      if(grid[cols][3] === 0 && I_TEMPLATE[cols] === 1){
+        grid[cols][3] = 1;
+      }
+    }
   }
 
   update(){
