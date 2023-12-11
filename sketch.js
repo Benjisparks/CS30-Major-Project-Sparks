@@ -11,7 +11,7 @@ let theGame;
 let GRID_HEIGHT = 20;
 let GRID_WIDTH = 10;
 let cellSize;
-let mainFont;
+let mainFont, gameFont;
 let temp; 
 
 let I_TEMPLATE = [1,1,1,1];
@@ -24,6 +24,7 @@ let J_TEMPLATE = [[1,1,],[1,0],[1,0]];
 
 function preload(){
   mainFont = loadFont("Tetris.ttf");
+  gameFont = loadFont("Retro Gaming.ttf");
 }
 
 function setup() {
@@ -64,14 +65,14 @@ class Tetris{
   }
 
   displayGrid(){
-    for ( let cols = 0; cols <= GRID_HEIGHT; cols++){
-      for(let rows = 0; rows <= GRID_WIDTH; rows ++){
+    for ( let cols = 0; cols < GRID_HEIGHT; cols++){
+      for(let rows = 0; rows < GRID_WIDTH; rows ++){
         if(grid[cols][rows] === 0){
           fill("grey");
           rect(rows*cellSize,cols*cellSize,cellSize,cellSize);
         }
         else if( grid[cols][rows] === 1){
-          fill("blue");
+          fill("cyan");
           rect(rows*cellSize,cols*cellSize,cellSize,cellSize);
         }
       }
@@ -95,10 +96,9 @@ class Tetris{
 }
 
 class Tetromino {
-  constructor(gridY,gridX, template){
+  constructor(gridY,gridX){
     this.y = gridY;
     this.x = gridX;
-    this.template = template;
   }
 
   tempInsert(){
@@ -126,9 +126,10 @@ class Tetromino {
 }
 
 class I_piece extends Tetromino {
-  constructor(x,y){
+  constructor(x,y,){
     super(x,y);
     this.template = I_TEMPLATE;
+    this.color = "cyan";
   }
   update(){
     super.update();
@@ -151,11 +152,33 @@ class O_piece extends Tetromino {
   constructor(x,y){
     super(x,y);
     this.template = O_TEMPLATE;
+    this.color = "gold";
   }
 }
 
+class T_piece extends Tetromino {
+  constructor(x,y){
+    super(x,y);
+    this.template = T_TEMPLATE;
+    this.color = "purple";
+  }
+}
 
+class Z_piece extends Tetromino {
+  constructor(x,y){
+    super(x,y);
+    this.template = Z_TEMPLATE;
+    this.color = "red";
+  }
+}
 
+class S_piece extends Tetromino {
+  constructor(x,y){
+    super(x,y);
+    this.template = S_TEMPLATE;
+    this.color = "lime";
+  }
+}
 
 // function createGrid(){
 //   let theGrid = [];
