@@ -112,17 +112,6 @@ class Tetromino {
   update(){
 
   }
-
-  // rotateCw(){
-    
-  // }
-
-  // rotateCcw(){
-
-  // }
-
-  display(){
-  }
 }
 
 class I_piece extends Tetromino {
