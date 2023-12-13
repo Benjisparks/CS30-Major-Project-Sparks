@@ -36,7 +36,7 @@ function setup() {
     cellSize = height/GRID_HEIGHT;
   }
   theGame = new Tetris();
-  temp = new Tetromino(1,3,I_TEMPLATE);
+  temp = new I_piece(1,3);
   grid = theGame.createGrid();
   temp.tempInsert();
 }
@@ -47,6 +47,11 @@ function draw() {
   //theGame.runGame();
 }
 
+function keyPressed(){
+  if(key === RIGHT_ARROW){
+    temp.shift("right");
+  }
+}
 class Tetris{
   constructor(){
     this.screen = "menu";
@@ -102,9 +107,9 @@ class Tetromino {
   }
 
   tempInsert(){
-    for(let cols = 0; cols <= I_TEMPLATE.length; cols++){
-      if(grid[cols][3] === 0 && I_TEMPLATE[cols] === 1){
-        grid[cols][3] = 1;
+    for(let rows = 0; rows <= I_TEMPLATE.length; rows++){
+      if(grid[1][rows] === 0 && I_TEMPLATE[rows] === 1){
+        grid[1][rows] = 1;
       }
     }
   }
@@ -115,7 +120,7 @@ class Tetromino {
 }
 
 class I_piece extends Tetromino {
-  constructor(x,y,){
+  constructor(x,y){
     super(x,y);
     this.template = I_TEMPLATE;
     this.color = "cyan";
@@ -131,9 +136,27 @@ class I_piece extends Tetromino {
   // rotateCcw(){
   //   super.rotateCcw();
   // }
+  tempInsert(){
+    super.tempInsert();
+    // for(let cols = 0; cols <= I_TEMPLATE.length; cols++){
+    //   if(grid[cols][3] === 0 && I_TEMPLATE[cols] === 1){
+    //     grid[cols][3] = 1;
+    //   }
+    // }
+  }
 
   display(){
     super.display();
+  }
+
+  shift(direction){
+    if(direction === "right"){
+      for(let i = 0; i < grid[1].length; i++){
+        if(grid[1][i] === 1){
+          grid[1][i+1] = 1;
+        }
+      }
+    }
   }
 }
 
