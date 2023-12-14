@@ -14,13 +14,13 @@ let cellSize;
 let mainFont, gameFont;
 let temp; 
 
-let I_TEMPLATE = [1,1,1,1];
+let I_TEMPLATE = [[1,1,1,1]];
 let O_TEMPLATE = [[1,1],[1,1]];
 let T_TEMPLATE = [[0,1,0],[1,1,1]];
 let Z_TEMPLATE = [[0,1,1,0],[0,0,1,1]];
 let S_TEMPLATE = [[0,0,1,1],[0,1,1,0]];
 let L_TEMPLATE = [[1,0],[1,0],[1,1]];
-let J_TEMPLATE = [[1,1,],[1,0],[1,0]];
+let J_TEMPLATE = [[1,1,],[1,0],[1,0]]; // Change these to be horizontal
 
 function preload(){
   mainFont = loadFont("Tetris.ttf");
@@ -36,9 +36,10 @@ function setup() {
     cellSize = height/GRID_HEIGHT;
   }
   theGame = new Tetris();
-  temp = new I_piece(1,3);
+  temp = new PieceL(3,1);
   grid = theGame.createGrid();
-  temp.tempInsert();
+  temp.insert();
+  // temp.update();
 }
 
 function draw() {
@@ -101,25 +102,34 @@ class Tetris{
 }
 
 class Tetromino {
-  constructor(gridY,gridX){
-    this.y = gridY;
-    this.x = gridX;
+  constructor(){
+    this.y = 1;
+    this.x = 3;
   }
 
-  tempInsert(){
-    for(let rows = 0; rows <= I_TEMPLATE.length; rows++){
-      if(grid[1][rows] === 0 && I_TEMPLATE[rows] === 1){
-        grid[1][rows] = 1;
+  // tempInsert(){
+  //   for(let rows = this.y; rows <= I_TEMPLATE.length; rows++){
+  //     if(grid[1][rows] === 0 && I_TEMPLATE[rows] === 1){
+  //       grid[1][rows] = 1;
+  //     }
+  //   }
+  // }
+  insert(template){
+    for(let col = 0; col < template.length; col ++){
+      for(let row = 0; row < template[col].length; row++){
+        if(template[col][row] === 1){
+          grid[this.y+col][this.x+row] = 1;
+        }
       }
     }
   }
 
   update(){
-
+    this.y += 1;
   }
 }
 
-class I_piece extends Tetromino {
+class PieceI extends Tetromino {
   constructor(x,y){
     super(x,y);
     this.template = I_TEMPLATE;
@@ -136,13 +146,9 @@ class I_piece extends Tetromino {
   // rotateCcw(){
   //   super.rotateCcw();
   // }
-  tempInsert(){
-    super.tempInsert();
-    // for(let cols = 0; cols <= I_TEMPLATE.length; cols++){
-    //   if(grid[cols][3] === 0 && I_TEMPLATE[cols] === 1){
-    //     grid[cols][3] = 1;
-    //   }
-    // }
+  insert(){
+    super.insert(I_TEMPLATE);
+
   }
 
   display(){
@@ -151,47 +157,97 @@ class I_piece extends Tetromino {
 
   shift(direction){
     if(direction === "right"){
-      for(let i = 0; i < grid[1].length; i++){
+      for(let i = 0; i < I_TEMPLATE.length; i++){
         if(grid[1][i] === 1){
           grid[1][i+1] = 1;
+        }
+        if(i === 0 && grid[1][i] === 1){
+          grid[1][i] = 0;
         }
       }
     }
   }
 }
 
-class O_piece extends Tetromino {
+class PieceO extends Tetromino {
   constructor(x,y){
     super(x,y);
     this.template = O_TEMPLATE;
     this.color = "gold";
   }
-}
 
-class T_piece extends Tetromino {
-  constructor(x,y){
-    super(x,y);
-    this.template = T_TEMPLATE;
-    this.color = "purple";
+  insert(){
+    super.insert(O_TEMPLATE);
   }
 }
 
-class Z_piece extends Tetromino {
+class PieceT extends Tetromino {
+  constructor(x,y){
+    super();
+    this.x = x;
+    this.y = y;
+    this.template = T_TEMPLATE;
+    this.color = "purple";
+  }
+
+  insert(){
+    super.insert(T_TEMPLATE);
+  }
+
+  update(){
+  }
+
+}
+
+class PieceZ extends Tetromino {
   constructor(x,y){
     super(x,y);
     this.template = Z_TEMPLATE;
     this.color = "red";
   }
+
+  insert(){
+    super.insert(Z_TEMPLATE);
+  }
 }
 
-class S_piece extends Tetromino {
+class PieceS extends Tetromino {
   constructor(x,y){
     super(x,y);
     this.template = S_TEMPLATE;
     this.color = "lime";
   }
+
+  insert(){
+    super.insert(S_TEMPLATE);
+  }
 }
 
+class PieceL extends Tetromino {
+  constructor(x,y){
+    super();
+    this.x = x;
+    this.y =y;
+    this.template = L_TEMPLATE;
+  }
+
+  insert(){
+    super.insert(L_TEMPLATE);
+  }
+}
+
+class PieceJ extends Tetromino {
+  constructor(x,y){
+    super();
+    this.x = x;
+    this.y =y;
+    this.template = L_TEMPLATE;
+  }
+
+  insert(){
+    super.insert(J_TEMPLATE);
+  }
+}
 // function createGrid(){
 //   let theGrid = [];
 //   for(let cols = 0; cols < GRID_HEIGHT; cols ++){
