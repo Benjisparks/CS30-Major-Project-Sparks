@@ -19,8 +19,8 @@ let O_TEMPLATE = [[1,1],[1,1]];
 let T_TEMPLATE = [[0,1,0],[1,1,1]];
 let Z_TEMPLATE = [[0,1,1,0],[0,0,1,1]];
 let S_TEMPLATE = [[0,0,1,1],[0,1,1,0]];
-let L_TEMPLATE = [[1,0],[1,0],[1,1]];
-let J_TEMPLATE = [[1,1,],[1,0],[1,0]]; // Change these to be horizontal
+let L_TEMPLATE = [[0,0,1],[1,1,1]]; //[[1,0],[1,0],[1,1]];
+let J_TEMPLATE = [[1,0,0],[1,1,1]]; 
 
 function preload(){
   mainFont = loadFont("Tetris.ttf");
@@ -36,10 +36,10 @@ function setup() {
     cellSize = height/GRID_HEIGHT;
   }
   theGame = new Tetris();
-  temp = new PieceL(3,1);
+  temp = new PieceS(3,1);
   grid = theGame.createGrid();
   temp.insert();
-  // temp.update();
+  //temp.update();
 }
 
 function draw() {
@@ -81,6 +81,30 @@ class Tetris{
           fill("cyan");
           rect(rows*cellSize,cols*cellSize,cellSize,cellSize);
         }
+        else if( grid[cols][rows] === 2){
+          fill("gold");
+          rows(rows*cellSize,cols*cellSize,cellSize,cellSize);
+        }
+        else if( grid[cols][rows] ===3){
+          fill("purple");
+          rows(rows*cellSize,cols*cellSize,cellSize,cellSize);
+        }
+        else if( grid[cols][rows] === 4){
+          fill("red");
+          rows(rows*cellSize,cols*cellSize,cellSize,cellSize);
+        }
+        else if( grid[cols][rows] === 5){
+          fill("lime");
+          rows(rows*cellSize,cols*cellSize,cellSize,cellSize);
+        }
+        else if( grid[cols][rows] === 6){
+          fill("orange");
+          rows(rows*cellSize,cols*cellSize,cellSize,cellSize);
+        }
+        else if( grid[cols][rows] === 7){
+          fill("blue");
+          rows(rows*cellSize,cols*cellSize,cellSize,cellSize);
+        }
       }
     }
   }
@@ -107,33 +131,27 @@ class Tetromino {
     this.x = 3;
   }
 
-  // tempInsert(){
-  //   for(let rows = this.y; rows <= I_TEMPLATE.length; rows++){
-  //     if(grid[1][rows] === 0 && I_TEMPLATE[rows] === 1){
-  //       grid[1][rows] = 1;
-  //     }
-  //   }
-  // }
-  insert(template){
+  insert(template, color){
     for(let col = 0; col < template.length; col ++){
       for(let row = 0; row < template[col].length; row++){
         if(template[col][row] === 1){
-          grid[this.y+col][this.x+row] = 1;
+          grid[this.y+col][this.x+row] = color;
         }
       }
     }
   }
 
-  update(){
+  update(template){
     this.y += 1;
-  }
+    this.insert();
+  }  
 }
 
 class PieceI extends Tetromino {
   constructor(x,y){
     super(x,y);
     this.template = I_TEMPLATE;
-    this.color = "cyan";
+    this.color = 1;
   }
   update(){
     super.update();
@@ -150,30 +168,13 @@ class PieceI extends Tetromino {
     super.insert(I_TEMPLATE);
 
   }
-
-  display(){
-    super.display();
-  }
-
-  shift(direction){
-    if(direction === "right"){
-      for(let i = 0; i < I_TEMPLATE.length; i++){
-        if(grid[1][i] === 1){
-          grid[1][i+1] = 1;
-        }
-        if(i === 0 && grid[1][i] === 1){
-          grid[1][i] = 0;
-        }
-      }
-    }
-  }
 }
 
 class PieceO extends Tetromino {
   constructor(x,y){
     super(x,y);
     this.template = O_TEMPLATE;
-    this.color = "gold";
+    this.color = 2;
   }
 
   insert(){
@@ -187,7 +188,7 @@ class PieceT extends Tetromino {
     this.x = x;
     this.y = y;
     this.template = T_TEMPLATE;
-    this.color = "purple";
+    this.color = 3;
   }
 
   insert(){
@@ -203,7 +204,7 @@ class PieceZ extends Tetromino {
   constructor(x,y){
     super(x,y);
     this.template = Z_TEMPLATE;
-    this.color = "red";
+    this.color = 4;
   }
 
   insert(){
@@ -215,11 +216,15 @@ class PieceS extends Tetromino {
   constructor(x,y){
     super(x,y);
     this.template = S_TEMPLATE;
-    this.color = "lime";
+    this.color = 5;
   }
 
   insert(){
     super.insert(S_TEMPLATE);
+  }
+
+  update(){
+    super.update(S_TEMPLATE);
   }
 }
 
@@ -227,8 +232,9 @@ class PieceL extends Tetromino {
   constructor(x,y){
     super();
     this.x = x;
-    this.y =y;
+    this.y = y;
     this.template = L_TEMPLATE;
+    this.color = 6;
   }
 
   insert(){
@@ -241,7 +247,8 @@ class PieceJ extends Tetromino {
     super();
     this.x = x;
     this.y =y;
-    this.template = L_TEMPLATE;
+    this.template = J_TEMPLATE;
+    this.color = 7;
   }
 
   insert(){
