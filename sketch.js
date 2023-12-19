@@ -5,7 +5,7 @@
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 
-
+let i = 0;
 let grid;
 let theGame;
 let GRID_HEIGHT = 20;
@@ -37,11 +37,10 @@ function setup() {
   }
   theGame = new Tetris();
   theGame.setOrder();
-  //temp = new PieceS(3,1);
   grid = theGame.createGrid();
   theGame.pieceArray[0].insert();
-  //temp.insert();
-  //temp.update();
+  theGame.pieceArray[0].update();
+
 }
 
 function draw() {
@@ -163,6 +162,16 @@ class Tetris{
     return this.pieceArray , this.pieceOrder;
   }
 
+  clearGrid(){
+    for ( let cols = 0; cols < GRID_HEIGHT; cols++){
+      for(let rows = 0; rows < GRID_WIDTH; rows ++){
+        if(grid[cols][rows] !== 0){
+          grid[cols][rows] = 0;
+        }
+      }
+    }
+  }
+
 }
 
 class Tetromino {
@@ -181,10 +190,22 @@ class Tetromino {
     }
   }
 
-  update(template){
-    this.y += 1;
-    this.insert();
-  }  
+  // update(template,color){
+  //   let trues = 0;
+  //   for(let x = this.x; x < x + template.length; x++){
+  //     if(grid[this.y+1][x] === 0){
+  //       trues += 1;
+  //     }
+  //   }
+  //   if(trues === template.length){
+  //     for(let x = this.x; x < x + template.length; x++){
+  //       grid[this.y][x] = 0;
+  //     }
+  //     for(let x = this.x; x < x + template.length; x++){
+  //       grid[this.y+1][x] = color;
+  //     }
+  //   }
+  // }  
 }
 
 class PieceI extends Tetromino {
@@ -194,16 +215,9 @@ class PieceI extends Tetromino {
     this.color = 1;
   }
   update(){
-    super.update();
+    super.update(I_TEMPLATE, this.color);
   }
 
-  // rotateCw(){
-  //   super.rotateCw();
-  // }
-
-  // rotateCcw(){
-  //   super.rotateCcw();
-  // }
   insert(){
     super.insert(I_TEMPLATE,this.color);
 
@@ -289,6 +303,15 @@ class PieceJ extends Tetromino {
     super.insert(J_TEMPLATE, this.color);
   }
 }
+
+// function keyTyped(){
+//   i += 1;
+//   if(key === " "){
+//     theGame.clearGrid();
+//     theGame.pieceArray[i].insert();
+//   }
+// }
+
 // function createGrid(){
 //   let theGrid = [];
 //   for(let cols = 0; cols < GRID_HEIGHT; cols ++){
