@@ -7,14 +7,17 @@
 
 let i = 0;
 let grid;
+let holdGrid;
 let theGame;
 let GRID_HEIGHT = 20;
 let GRID_WIDTH = 10;
+let HOLD_GRID_H =  3;
+let HOLD_GRID_W = 4;
 let cellSize;
 let mainFont, gameFont;
 let temp; 
 
-let I_TEMPLATE = [[1,1,1,1]];
+let I_TEMPLATE = [[[1,1,1,1]] , [[1],[1],[1],[1]]];
 let O_TEMPLATE = [[1,1],[1,1]];
 let T_TEMPLATE = [[0,1,0],[1,1,1]];
 let Z_TEMPLATE = [[0,1,1,0],[0,0,1,1]];
@@ -39,7 +42,7 @@ function setup() {
   theGame.setOrder();
   grid = theGame.createGrid();
   theGame.pieceArray[0].insert();
-  theGame.pieceArray[0].update();
+  //theGame.pieceArray[0].update();
 
 }
 
@@ -172,6 +175,23 @@ class Tetris{
     }
   }
 
+  holdPieceGrid(){
+    for(let cols = 0; cols < HOLD_GRID_H; cols ++){
+      for(let rows = 0; rows < HOLD_GRID_W; rows++){
+        holdGrid[cols][rows].push(0);
+      }
+    }
+  }
+
+  showHeld(){
+
+  }
+
+  nextPiece(){
+    let nextGrid = [];
+    nextGrid.push(); 
+  } 
+
 }
 
 class Tetromino {
@@ -250,6 +270,9 @@ class PieceT extends Tetromino {
   update(){
   }
 
+  rotate(){
+    super.insert();
+  }
 }
 
 class PieceZ extends Tetromino {
