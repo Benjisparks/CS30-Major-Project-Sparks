@@ -9,6 +9,7 @@ let i = 0;
 let grid;
 let holdGrid;
 let theGame;
+let HOLD_OFFSET;
 let GRID_HEIGHT = 20;
 let GRID_WIDTH = 10;
 let HOLD_GRID_H =  3;
@@ -17,7 +18,7 @@ let cellSize;
 let mainFont, gameFont;
 let temp; 
 
-let I_TEMPLATE = [[[1,1,1,1]] , [[1],[1],[1],[1]]];
+let I_TEMPLATE = [[1,1,1,1]]; // [[1],[1],[1],[1]]];
 let O_TEMPLATE = [[1,1],[1,1]];
 let T_TEMPLATE = [[0,1,0],[1,1,1]];
 let Z_TEMPLATE = [[0,1,1,0],[0,0,1,1]];
@@ -38,9 +39,11 @@ function setup() {
   else {
     cellSize = height/GRID_HEIGHT;
   }
+  HOLD_OFFSET = 400;
   theGame = new Tetris();
   theGame.setOrder();
   grid = theGame.createGrid();
+  holdGrid = theGame.holdPieceGrid();
   theGame.pieceArray[0].insert();
   //theGame.pieceArray[0].update();
 
@@ -49,6 +52,7 @@ function setup() {
 function draw() {
   background(220);
   theGame.displayGrid();
+  theGame.displayHeld();
   //theGame.runGame();
 }
 
@@ -176,15 +180,57 @@ class Tetris{
   }
 
   holdPieceGrid(){
+    let thisGrid = [];
+    for(let cols = 0; cols < HOLD_GRID_H; cols ++){
+      thisGrid.push([]);
+      for(let rows = 0; rows < HOLD_GRID_W; rows ++){
+        thisGrid[cols].push(0);
+      }
+    }
+    return thisGrid;
+  }
+
+  displayHeld(){
     for(let cols = 0; cols < HOLD_GRID_H; cols ++){
       for(let rows = 0; rows < HOLD_GRID_W; rows++){
-        holdGrid[cols][rows].push(0);
+        if(holdGrid[cols][rows] === 0){
+          fill("grey");
+          rect(rows*cellSize + HOLD_OFFSET,cols*cellSize,cellSize,cellSize);
+        }
+        else if( holdGrid[cols][rows] === 1){
+          fill("cyan");
+          rect(rows*cellSize + HOLD_OFFSET,cols*cellSize,cellSize,cellSize);
+        }
+        else if( holdGrid[cols][rows] === 2){
+          fill("gold");
+          rect(rows*cellSize + HOLD_OFFSET,cols*cellSize,cellSize,cellSize);
+        }
+        else if( holdGrid[cols][rows] ===3){
+          fill("purple");
+          rect(rows*cellSize + HOLD_OFFSET,cols*cellSize,cellSize,cellSize);
+        }
+        else if( holdGrid[cols][rows] === 4){
+          fill("red");
+          rect(rows*cellSize + HOLD_OFFSET,cols*cellSize,cellSize,cellSize);
+        }
+        else if( holdGrid[cols][rows] === 5){
+          fill("lime");
+          rect(rows*cellSize + HOLD_OFFSET,cols*cellSize,cellSize,cellSize);
+        }
+        else if( holdGrid[cols][rows] === 6){
+          fill("orange");
+          rect(rows*cellSize + HOLD_OFFSET,cols*cellSize,cellSize,cellSize);
+        }
+        else if( holdGrid[cols][rows] === 7){
+          fill("blue");
+          rect(rows*cellSize + HOLD_OFFSET,cols*cellSize,cellSize,cellSize);
+        }
       }
     }
   }
 
-  showHeld(){
-
+  holdPiece(){
+    this.nextGrid(i);
   }
 
   nextPiece(){
@@ -197,7 +243,7 @@ class Tetris{
 class Tetromino {
   constructor(){
     this.y = 1;
-    this.x = 3;
+    this.x = 0;
   }
 
   insert(template, color){
@@ -327,13 +373,13 @@ class PieceJ extends Tetromino {
   }
 }
 
-// function keyTyped(){
-//   i += 1;
-//   if(key === " "){
-//     theGame.clearGrid();
-//     theGame.pieceArray[i].insert();
-//   }
-// }
+function keyTyped(){
+  i += 1;
+  if(key === " "){
+    theGame.clearGrid();
+    theGame.pieceArray[i].insert();
+  }
+}
 
 // function createGrid(){
 //   let theGrid = [];
