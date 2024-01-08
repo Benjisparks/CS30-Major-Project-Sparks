@@ -8,12 +8,15 @@
 let i = 0;
 let grid;
 let holdGrid;
+let nextGrid;
 let theGame;
 let HOLD_OFFSET;
 let GRID_HEIGHT = 20;
 let GRID_WIDTH = 10;
 let HOLD_GRID_H =  3;
 let HOLD_GRID_W = 4;
+let NEXT_GRID_H;
+let NEXT_GRID_W;
 let cellSize;
 let mainFont, gameFont;
 let temp; 
@@ -190,6 +193,17 @@ class Tetris{
     return thisGrid;
   }
 
+  nextPiecesGrid(){
+    let thisGrid = [];
+    for(let cols = 0; cols < NEXT_GRID_H; cols ++){
+      thisGrid.push([]);
+      for(let rows = 0; rows < NEXT_GRID_W; rows++){
+        thisGrid[cols].push(0);
+      }
+    }
+    return thisGrid;
+  }
+
   displayHeld(){
     for(let cols = 0; cols < HOLD_GRID_H; cols ++){
       for(let rows = 0; rows < HOLD_GRID_W; rows++){
@@ -229,14 +243,53 @@ class Tetris{
     }
   }
 
-  holdPiece(){
-    this.nextGrid(i);
+  displayNext(){
+    for(let cols = 0; cols < NEXT_GRID_H; cols ++){
+      for(let rows = 0; rows < NEXT_GRID_W; rows++){
+        if(nextGrid[cols][rows] === 0){
+          fill("grey");
+          rect(rows*cellSize + HOLD_OFFSET,cols*cellSize,cellSize,cellSize);
+        }
+        else if( nextGrid[cols][rows] === 1){
+          fill("cyan");
+          rect(rows*cellSize + HOLD_OFFSET,cols*cellSize,cellSize,cellSize);
+        }
+        else if( nextGrid[cols][rows] === 2){
+          fill("gold");
+          rect(rows*cellSize + HOLD_OFFSET,cols*cellSize,cellSize,cellSize);
+        }
+        else if( nextGrid[cols][rows] ===3){
+          fill("purple");
+          rect(rows*cellSize + HOLD_OFFSET,cols*cellSize,cellSize,cellSize);
+        }
+        else if( nextGrid[cols][rows] === 4){
+          fill("red");
+          rect(rows*cellSize + HOLD_OFFSET,cols*cellSize,cellSize,cellSize);
+        }
+        else if( nextGrid[cols][rows] === 5){
+          fill("lime");
+          rect(rows*cellSize + HOLD_OFFSET,cols*cellSize,cellSize,cellSize);
+        }
+        else if( nextGrid[cols][rows] === 6){
+          fill("orange");
+          rect(rows*cellSize + HOLD_OFFSET,cols*cellSize,cellSize,cellSize);
+        }
+        else if( nextGrid[cols][rows] === 7){
+          fill("blue");
+          rect(rows*cellSize + HOLD_OFFSET,cols*cellSize,cellSize,cellSize);
+        }
+      }
+    }
   }
 
-  nextPiece(){
-    let nextGrid = [];
-    nextGrid.push(); 
-  } 
+  // holdPiece(){
+  //   this.nextGrid(i);
+  // }
+
+  // nextPiece(){
+  //   let nextGrid = [];
+  //   nextGrid.push(); 
+  // } 
 
 }
 
