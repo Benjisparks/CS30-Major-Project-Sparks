@@ -15,8 +15,8 @@ let GRID_HEIGHT = 20;
 let GRID_WIDTH = 10;
 let HOLD_GRID_H =  3;
 let HOLD_GRID_W = 4;
-let NEXT_GRID_H;
-let NEXT_GRID_W;
+let NEXT_GRID_H = 3;
+let NEXT_GRID_W = 4;
 let cellSize;
 let mainFont, gameFont;
 let temp; 
@@ -47,7 +47,9 @@ function setup() {
   theGame.setOrder();
   grid = theGame.createGrid();
   holdGrid = theGame.holdPieceGrid();
+  nextGrid = theGame.nextPiecesGrid();
   theGame.pieceArray[0].insert();
+  theGame.nextPiece();
   //theGame.pieceArray[0].update();
 
 }
@@ -56,6 +58,7 @@ function draw() {
   background(220);
   theGame.displayGrid();
   theGame.displayHeld();
+  theGame.displayNext();
   //theGame.runGame();
 }
 
@@ -248,35 +251,35 @@ class Tetris{
       for(let rows = 0; rows < NEXT_GRID_W; rows++){
         if(nextGrid[cols][rows] === 0){
           fill("grey");
-          rect(rows*cellSize + HOLD_OFFSET,cols*cellSize,cellSize,cellSize);
+          rect(rows*cellSize + HOLD_OFFSET,cols*cellSize + HOLD_OFFSET/2,cellSize,cellSize);
         }
         else if( nextGrid[cols][rows] === 1){
           fill("cyan");
-          rect(rows*cellSize + HOLD_OFFSET,cols*cellSize,cellSize,cellSize);
+          rect(rows*cellSize + HOLD_OFFSET,cols*cellSize + HOLD_OFFSET/2,cellSize,cellSize);
         }
         else if( nextGrid[cols][rows] === 2){
           fill("gold");
-          rect(rows*cellSize + HOLD_OFFSET,cols*cellSize,cellSize,cellSize);
+          rect(rows*cellSize + HOLD_OFFSET,cols*cellSize + HOLD_OFFSET/2,cellSize,cellSize);
         }
         else if( nextGrid[cols][rows] ===3){
           fill("purple");
-          rect(rows*cellSize + HOLD_OFFSET,cols*cellSize,cellSize,cellSize);
+          rect(rows*cellSize + HOLD_OFFSET,cols*cellSize + HOLD_OFFSET/2,cellSize,cellSize);
         }
         else if( nextGrid[cols][rows] === 4){
           fill("red");
-          rect(rows*cellSize + HOLD_OFFSET,cols*cellSize,cellSize,cellSize);
+          rect(rows*cellSize + HOLD_OFFSET,cols*cellSize + HOLD_OFFSET/2,cellSize,cellSize);
         }
         else if( nextGrid[cols][rows] === 5){
           fill("lime");
-          rect(rows*cellSize + HOLD_OFFSET,cols*cellSize,cellSize,cellSize);
+          rect(rows*cellSize + HOLD_OFFSET,cols*cellSize + HOLD_OFFSET/2,cellSize,cellSize);
         }
         else if( nextGrid[cols][rows] === 6){
           fill("orange");
-          rect(rows*cellSize + HOLD_OFFSET,cols*cellSize,cellSize,cellSize);
+          rect(rows*cellSize + HOLD_OFFSET,cols*cellSize + HOLD_OFFSET/2,cellSize,cellSize);
         }
         else if( nextGrid[cols][rows] === 7){
           fill("blue");
-          rect(rows*cellSize + HOLD_OFFSET,cols*cellSize,cellSize,cellSize);
+          rect(rows*cellSize + HOLD_OFFSET,cols*cellSize + HOLD_OFFSET/2,cellSize,cellSize);
         }
       }
     }
@@ -287,8 +290,7 @@ class Tetris{
   // }
 
   // nextPiece(){
-  //   let nextGrid = [];
-  //   nextGrid.push(); 
+  //   this.pieceArray[1].insert();
   // } 
 
 }
