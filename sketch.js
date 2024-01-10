@@ -74,6 +74,7 @@ class Tetris{
     this.level = 1;
     this.pieceOrder = [];
     this.pieceArray =[];
+    this.currentPiece = 0;
   }
   createGrid(){
     let theGrid = [];
@@ -286,12 +287,12 @@ class Tetris{
   }
 
   // holdPiece(){
-  //   this.nextGrid(i);
+  //   this.pieceArray[this.currentPiece].ho
   // }
 
-  // nextPiece(){
-  //   this.pieceArray[1].insert();
-  // } 
+  nextPiece(){
+    this.pieceArray[this.currentPiece + 1].showNext();
+  } 
 
 }
 
@@ -311,6 +312,15 @@ class Tetromino {
     }
   }
 
+  showNext(template, color){
+    for(let col = 0; col < template.length; col ++){
+      for(let row = 0; row < template[col].length; row++){
+        if(template[col][row] === 1){
+          nextGrid[this.y+col][this.x+row] = color;
+        }
+      }
+    }
+  }
   // update(template,color){
   //   let trues = 0;
   //   for(let x = this.x; x < x + template.length; x++){
@@ -343,6 +353,10 @@ class PieceI extends Tetromino {
     super.insert(I_TEMPLATE,this.color);
 
   }
+
+  showNext(){
+    super.showNext(this.template, this.color);
+  }
 }
 
 class PieceO extends Tetromino {
@@ -354,6 +368,10 @@ class PieceO extends Tetromino {
 
   insert(){
     super.insert(O_TEMPLATE, this.color);
+  }
+
+  showNext(){
+    super.showNext(this.template, this.color);
   }
 }
 
@@ -374,6 +392,11 @@ class PieceT extends Tetromino {
   rotate(){
     super.insert();
   }
+
+  showNext(){
+    super.showNext(this.template, this.color);
+  }
+
 }
 
 class PieceZ extends Tetromino {
@@ -385,6 +408,10 @@ class PieceZ extends Tetromino {
 
   insert(){
     super.insert(Z_TEMPLATE, this.color);
+  }
+
+  showNext(){
+    super.showNext(this.template, this.color);
   }
 }
 
@@ -402,6 +429,10 @@ class PieceS extends Tetromino {
   update(){
     super.update(S_TEMPLATE);
   }
+
+  showNext(){
+    super.showNext(this.template, this.color);
+  }
 }
 
 class PieceL extends Tetromino {
@@ -413,6 +444,10 @@ class PieceL extends Tetromino {
 
   insert(){
     super.insert(L_TEMPLATE, this.color);
+  }
+
+  showNext(){
+    super.showNext(this.template, this.color);
   }
 }
 
@@ -426,6 +461,10 @@ class PieceJ extends Tetromino {
   insert(){
     super.insert(J_TEMPLATE, this.color);
   }
+
+  showNext(){
+    super.showNext(this.template, this.color);
+  }
 }
 
 function keyTyped(){
@@ -434,6 +473,9 @@ function keyTyped(){
     theGame.clearGrid();
     theGame.pieceArray[i].insert();
   }
+  // if(key === "c"){
+  //   theGame.
+  // }
 }
 
 // function createGrid(){
