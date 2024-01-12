@@ -10,6 +10,7 @@ let grid;
 let holdGrid;
 let nextGrid;
 let theGame;
+let music1;
 let HOLD_OFFSET;
 let GRID_HEIGHT = 20;
 let GRID_WIDTH = 10;
@@ -32,6 +33,7 @@ let J_TEMPLATE = [[1,0,0],[1,1,1]];
 function preload(){
   mainFont = loadFont("Tetris.ttf");
   gameFont = loadFont("Retro Gaming.ttf");
+  music1 = loadSound("TetrisTheme1.mp3");
 }
 
 function setup() {
@@ -75,6 +77,8 @@ class Tetris{
     this.pieceOrder = [];
     this.pieceArray =[];
     this.currentPiece = 0;
+    this.heldPiece = [];
+    this.music1 = music1;
   }
   createGrid(){
     let theGrid = [];
@@ -186,6 +190,10 @@ class Tetris{
     }
   }
 
+  playMusic(){
+    this.music1.play();
+  }
+
   holdPieceGrid(){
     let thisGrid = [];
     for(let cols = 0; cols < HOLD_GRID_H; cols ++){
@@ -286,9 +294,10 @@ class Tetris{
     }
   }
 
-  // holdPiece(){
-  //   this.pieceArray[this.currentPiece].ho
-  // }
+  holdPiece(){
+    this.pieceArray[this.currentPiece].hold();
+    this.currentPiece += 1;
+  }
 
   nextPiece(){
     this.pieceArray[this.currentPiece + 1].showNext();
@@ -336,7 +345,13 @@ class Tetromino {
   //       grid[this.y+1][x] = color;
   //     }
   //   }
-  // }  
+  // }
+  
+  hold(piece){
+    theGame.heldPiece.length = 0; 
+    theGame.heldPiece.push(new piece);
+  }
+
 }
 
 class PieceI extends Tetromino {
@@ -357,6 +372,10 @@ class PieceI extends Tetromino {
   showNext(){
     super.showNext(this.template, this.color);
   }
+  
+  hold(){
+    super.hold(PieceI);
+  }
 }
 
 class PieceO extends Tetromino {
@@ -372,6 +391,10 @@ class PieceO extends Tetromino {
 
   showNext(){
     super.showNext(this.template, this.color);
+  }
+
+  hold(){
+    super.hold(PieceO);
   }
 }
 
@@ -397,6 +420,9 @@ class PieceT extends Tetromino {
     super.showNext(this.template, this.color);
   }
 
+  hold(){
+    super.hold(PieceT);
+  }
 }
 
 class PieceZ extends Tetromino {
@@ -412,6 +438,10 @@ class PieceZ extends Tetromino {
 
   showNext(){
     super.showNext(this.template, this.color);
+  }
+
+  hold(){
+    super.hold(PieceZ);
   }
 }
 
@@ -433,6 +463,10 @@ class PieceS extends Tetromino {
   showNext(){
     super.showNext(this.template, this.color);
   }
+
+  hold(){
+    super.hold(PieceS);
+  }
 }
 
 class PieceL extends Tetromino {
@@ -448,6 +482,10 @@ class PieceL extends Tetromino {
 
   showNext(){
     super.showNext(this.template, this.color);
+  }
+
+  hold(){
+    super.hold(PieceL);
   }
 }
 
@@ -465,6 +503,10 @@ class PieceJ extends Tetromino {
   showNext(){
     super.showNext(this.template, this.color);
   }
+
+  hold(){
+    super.hold(PieceJ);
+  }
 }
 
 function keyTyped(){
@@ -472,10 +514,11 @@ function keyTyped(){
   if(key === " "){
     theGame.clearGrid();
     theGame.pieceArray[i].insert();
+    theGame.nextPiece();
   }
-  // if(key === "c"){
-  //   theGame.
-  // }
+  if(key === "c"){
+    theGame.pieceArray[theGame.currentPiece].hold();
+  }
 }
 
 // function createGrid(){
