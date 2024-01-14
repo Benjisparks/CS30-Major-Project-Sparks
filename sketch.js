@@ -20,7 +20,6 @@ let NEXT_GRID_H = 3;
 let NEXT_GRID_W = 4;
 let cellSize;
 let mainFont, gameFont;
-let temp; 
 
 let I_TEMPLATE = [[1,1,1,1]]; // [[1],[1],[1],[1]]];
 let O_TEMPLATE = [[1,1],[1,1]];
@@ -64,11 +63,6 @@ function draw() {
   //theGame.runGame();
 }
 
-function keyPressed(){
-  if(key === RIGHT_ARROW){
-    temp.shift("right");
-  }
-}
 class Tetris{
   constructor(){
     this.screen = "menu";
@@ -294,6 +288,32 @@ class Tetris{
     }
   }
 
+  dropPiece(){
+    if(this.isValidMove) {
+      this.pieceArray[this.currentPiece].clear();
+
+      this.pieceArray[this.currentPiece].y++;
+
+      this.pieceArray[this.currentPiece].insert(this.pieceArray[this.currentPiece].template, this.pieceArray[this.currentPiece].color);
+
+      this.displayGrid();
+
+    }
+    else{
+      //
+    }
+  }
+
+  isValidMove(dx, dy){
+    let thePiece = this.pieceArray[this.currentPiece];
+    let theTemplate = thePiece.template;
+
+    let newY = thePiece.y + dy;
+
+    if
+
+  }
+
   holdPiece(){
     this.pieceArray[this.currentPiece].hold();
     this.currentPiece += 1;
@@ -329,6 +349,10 @@ class Tetromino {
         }
       }
     }
+  }
+
+  clear(){
+
   }
   // update(template,color){
   //   let trues = 0;
