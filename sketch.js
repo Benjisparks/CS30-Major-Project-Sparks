@@ -51,7 +51,6 @@ function setup() {
   nextGrid = theGame.nextPiecesGrid();
   theGame.pieceArray[0].insert(); /// fix 
   theGame.nextPiece();
-  //theGame.pieceArray[0].update();
 
 }
 
@@ -300,8 +299,22 @@ class Tetris{
 
     }
     else{
-      //
+      this.lock();
+      this.currentPiece += 1;
     }
+  }
+
+  leftMove(){
+    if(this.isValidMove(this.pieceArray[this.currentPiece].x, this.pieceArray[this.currentPiece].y)){
+      this.pieceArray[this.currentPiece].clear();
+
+      this.pieceArray[this.currentPiece].x ++;
+
+      this.pieceArray[this.currentPiece].insert(this.pieceArray[this.currentPiece].template, this.pieceArray[this.currentPiece].color);
+
+      this.displayGrid();
+    }
+    
   }
 
   isValidMove(dx, dy){
@@ -315,6 +328,7 @@ class Tetris{
       return false;
     }
     
+
 
   }
 
