@@ -49,7 +49,7 @@ function setup() {
   grid = theGame.createGrid();
   holdGrid = theGame.holdPieceGrid();
   nextGrid = theGame.nextPiecesGrid();
-  theGame.pieceArray[0].insert();
+  theGame.pieceArray[0].insert(); /// fix 
   theGame.nextPiece();
   //theGame.pieceArray[0].update();
 
@@ -143,31 +143,31 @@ class Tetris{
     }
     for(let i of this.pieceOrder){
       if(i === 1){
-        let him = new PieceI();
+        let him = new PieceI(0,1);
         this.pieceArray.push(him);
       }
       else if(i === 2){
-        let him = new PieceO();
+        let him = new PieceO(0,1);
         this.pieceArray.push(him);
       }
       else if(i === 3){
-        let him = new PieceT();
+        let him = new PieceT(0,1);
         this.pieceArray.push(him);
       }
       else if(i === 4){
-        let him = new PieceZ();
+        let him = new PieceZ(0,1);
         this.pieceArray.push(him);
       }
       else if(i === 5){
-        let him = new PieceS();
+        let him = new PieceS(0,1);
         this.pieceArray.push(him);
       }
       else if(i === 6){
-        let him = new PieceL();
+        let him = new PieceL(0,1);
         this.pieceArray.push(him);
       }
       else if(i === 7){
-        let him = new PieceJ();
+        let him = new PieceJ(0,1);
         this.pieceArray.push(him);
       }
     }  
@@ -289,7 +289,7 @@ class Tetris{
   }
 
   dropPiece(){
-    if(this.isValidMove) {
+    if(this.isValidMove(0,1)) {
       this.pieceArray[this.currentPiece].clear();
 
       this.pieceArray[this.currentPiece].y++;
@@ -309,8 +309,12 @@ class Tetris{
     let theTemplate = thePiece.template;
 
     let newY = thePiece.y + dy;
+    let newX = thePiece.x + dx;
 
-    if
+    if (newY < 0 || newY + theTemplate.length > GRID_HEIGHT || newX < 0){
+      return false;
+    }
+    
 
   }
 
@@ -380,7 +384,9 @@ class Tetromino {
 
 class PieceI extends Tetromino {
   constructor(x,y){
-    super(x,y);
+    super();
+    this.x = x;
+    this.y = y;
     this.template = I_TEMPLATE;
     this.color = 1;
   }
@@ -389,7 +395,7 @@ class PieceI extends Tetromino {
   }
 
   insert(){
-    super.insert(I_TEMPLATE,this.color);
+    super.insert(I_TEMPLATE,this.color); ///ADD X Y 
 
   }
 
@@ -404,7 +410,9 @@ class PieceI extends Tetromino {
 
 class PieceO extends Tetromino {
   constructor(x,y){
-    super(x,y);
+    super();
+    this.x = x; 
+    this.y = y;
     this.template = O_TEMPLATE;
     this.color = 2;
   }
@@ -424,7 +432,9 @@ class PieceO extends Tetromino {
 
 class PieceT extends Tetromino {
   constructor(x,y){
-    super(x,y);
+    super();
+    this.x = x;
+    this.y = y;
     this.template = T_TEMPLATE;
     this.color = 3;
   }
@@ -451,7 +461,9 @@ class PieceT extends Tetromino {
 
 class PieceZ extends Tetromino {
   constructor(x,y){
-    super(x,y);
+    super();
+    this.x = x;
+    this.y = y;
     this.template = Z_TEMPLATE;
     this.color = 4;
   }
@@ -471,7 +483,9 @@ class PieceZ extends Tetromino {
 
 class PieceS extends Tetromino {
   constructor(x,y){
-    super(x,y);
+    super();
+    this.x = x;
+    this.y = y; 
     this.template = S_TEMPLATE;
     this.color = 5;
   }
@@ -495,7 +509,9 @@ class PieceS extends Tetromino {
 
 class PieceL extends Tetromino {
   constructor(x,y){
-    super(x,y);
+    super();
+    this.x = x;
+    this.y = y;
     this.template = L_TEMPLATE;
     this.color = 6;
   }
@@ -515,7 +531,9 @@ class PieceL extends Tetromino {
 
 class PieceJ extends Tetromino {
   constructor(x,y){
-    super(x,y);
+    super();
+    this.x = x;
+    this.y = y;
     this.template = J_TEMPLATE;
     this.color = 7;
   }
