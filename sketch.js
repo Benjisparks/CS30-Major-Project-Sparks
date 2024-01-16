@@ -51,7 +51,7 @@ function setup() {
   nextGrid = theGame.nextPiecesGrid();
   theGame.pieceArray[0].insert(); /// fix 
   theGame.nextPiece();
-
+  //setInterval(() => theGame.dropPiece(), 1000);
 }
 
 function draw() {
@@ -315,7 +315,7 @@ class Tetris{
   }
 
   leftMove(){
-    if(this.isValidMove(this.pieceArray[this.currentPiece].x, this.pieceArray[this.currentPiece].y)){
+    if(this.isValidMove(-1,0)){
       this.pieceArray[this.currentPiece].clear();
 
       this.pieceArray[this.currentPiece].x --;
@@ -324,11 +324,10 @@ class Tetris{
 
       this.displayGrid();
     }
-    
   }
 
   rightMove(){
-    if(this.isValidMove(this.pieceArray[this.currentPiece].x, this.pieceArray[this.currentPiece].y)){
+    if(this.isValidMove(1,0)){
       this.pieceArray[this.currentPiece].clear();
 
       this.pieceArray[this.currentPiece].x ++;
@@ -337,7 +336,6 @@ class Tetris{
 
       this.displayGrid();
     }
-    
   }
 
   isValidMove(dx, dy){
@@ -369,7 +367,14 @@ class Tetris{
 
   nextPiece(){
     this.pieceArray[this.currentPiece + 1].showNext();
-  } 
+    if(this.currentPiece + 1 === (this.pieceArray.length -1)){
+      this.setOrder();
+    }
+  }
+
+  checkForClear(){
+
+  }
 
 }
 
@@ -436,6 +441,9 @@ class Tetromino {
         }
       }
     }
+
+    clear();
+    theGame.currentPiece += 1;
   }
   
 
