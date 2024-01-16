@@ -308,6 +308,19 @@ class Tetris{
     if(this.isValidMove(this.pieceArray[this.currentPiece].x, this.pieceArray[this.currentPiece].y)){
       this.pieceArray[this.currentPiece].clear();
 
+      this.pieceArray[this.currentPiece].x --;
+
+      this.pieceArray[this.currentPiece].insert(this.pieceArray[this.currentPiece].template, this.pieceArray[this.currentPiece].color);
+
+      this.displayGrid();
+    }
+    
+  }
+
+  rightMove(){
+    if(this.isValidMove(this.pieceArray[this.currentPiece].x, this.pieceArray[this.currentPiece].y)){
+      this.pieceArray[this.currentPiece].clear();
+
       this.pieceArray[this.currentPiece].x ++;
 
       this.pieceArray[this.currentPiece].insert(this.pieceArray[this.currentPiece].template, this.pieceArray[this.currentPiece].color);
@@ -328,7 +341,7 @@ class Tetris{
       return false;
     }
     
-
+    return true;
 
   }
 
@@ -390,9 +403,27 @@ class Tetromino {
   // }
   
   hold(piece){
-    theGame.heldPiece.length = 0; 
-    theGame.heldPiece.push(new piece);
+    for(let cols = 0; cols < HOLD_GRID_H; cols++){
+      for(let rows = 0; rows < HOLD_GRID_W; rows++){
+        if(holdGrid[cols][rows] !== 0){
+          holdGrid[cols][rows] = 0;
+        }
+      }
+    }
+
+    // theGame.heldPiece.length = 0; 
+    // theGame.heldPiece.push(new piece(0,0));
+    let heldPiece = new piece(0,0);
+
+    for (let col = 0; col < heldPiece.template.length; col++) {
+      for (let row = 0; row < heldPiece.template[col].length; row++) {
+        if (heldPiece.template[col][row] === 1) {
+          holdGrid[col][row] = heldPiece.color;
+        }
+      }
+    }
   }
+  
 
 }
 
@@ -574,6 +605,10 @@ function keyTyped(){
   }
   if(key === "c"){
     theGame.pieceArray[theGame.currentPiece].hold();
+  }
+
+  if(key === "a"){
+    theGame.leftMove();
   }
 }
 
