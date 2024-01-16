@@ -43,7 +43,7 @@ function setup() {
   else {
     cellSize = height/GRID_HEIGHT;
   }
-  HOLD_OFFSET = 400;
+  HOLD_OFFSET = windowWidth/3.5;
   theGame = new Tetris();
   theGame.setOrder();
   grid = theGame.createGrid();
@@ -59,6 +59,7 @@ function draw() {
   theGame.displayGrid();
   theGame.displayHeld();
   theGame.displayNext();
+  theGame.scoreCounter();
   //theGame.runGame();
 }
 
@@ -66,6 +67,7 @@ class Tetris{
   constructor(){
     this.screen = "menu";
     this.score = 0;
+    //this.timer = millis();
     this.level = 1;
     this.pieceOrder = [];
     this.pieceArray =[];
@@ -209,6 +211,12 @@ class Tetris{
     return thisGrid;
   }
 
+  scoreCounter(){
+    textFont(gameFont);
+    textAlign(RIGHT);
+    text("SCORE:" + this.score, width /1.5, height/ 4);
+  }
+
   displayHeld(){
     for(let cols = 0; cols < HOLD_GRID_H; cols ++){
       for(let rows = 0; rows < HOLD_GRID_W; rows++){
@@ -299,8 +307,10 @@ class Tetris{
 
     }
     else{
-      this.lock();
+      //this.lock();
       this.currentPiece += 1;
+      this.pieceArray[this.currentPiece].insert(this.pieceArray[this.currentPiece].template, this.pieceArray[this.currentPiece].color);
+      this.score += 36;
     }
   }
 
@@ -337,10 +347,17 @@ class Tetris{
     let newY = thePiece.y + dy;
     let newX = thePiece.x + dx;
 
-    if (newY < 0 || newY + theTemplate.length > GRID_HEIGHT || newX < 0){
+    if (newY < 0 || newY + theTemplate.length > GRID_HEIGHT || newX < 0 || newX + theTemplate[0].length > GRID_WIDTH){
       return false;
     }
     
+    for (let col = 0; col < GRID_HEIGHT; col++) {
+      for (let row = 0; row < GRID_WIDTH; row++) {
+        if (grid[newY + theTemplate.length - 1][newX + theTemplate[0].length -1] !== 0) {   //FIIIXIXIXIXXIIXX
+          return false;
+        }
+      }
+    }
     return true;
 
   }
@@ -383,23 +400,20 @@ class Tetromino {
   }
 
   clear(){
+    let thePiece = theGame.pieceArray[theGame.currentPiece];
+    let template = thePiece.template;
 
+    for (let col = 0; col < template.length; col++) {
+      for (let row = 0; row < template[col].length; row++) {
+        if (template[col][row] === 1) {
+          grid[thePiece.y + col][thePiece.x + row] = 0;
+        }
+      }
+    }
   }
-  // update(template,color){
-  //   let trues = 0;
-  //   for(let x = this.x; x < x + template.length; x++){
-  //     if(grid[this.y+1][x] === 0){
-  //       trues += 1;
-  //     }
-  //   }
-  //   if(trues === template.length){
-  //     for(let x = this.x; x < x + template.length; x++){
-  //       grid[this.y][x] = 0;
-  //     }
-  //     for(let x = this.x; x < x + template.length; x++){
-  //       grid[this.y+1][x] = color;
-  //     }
-  //   }
+
+  // lock(){
+
   // }
   
   hold(piece){
@@ -416,7 +430,7 @@ class Tetromino {
     let heldPiece = new piece(0,0);
 
     for (let col = 0; col < heldPiece.template.length; col++) {
-      for (let row = 0; row < heldPiece.template[col].length; row++) {
+      for (let row = 0; row < heldPiece.template[col].length; row++) {  ////FIX THIS
         if (heldPiece.template[col][row] === 1) {
           holdGrid[col][row] = heldPiece.color;
         }
@@ -607,6 +621,12 @@ function keyTyped(){
     theGame.pieceArray[theGame.currentPiece].hold();
   }
 
+  if(key === "d"){
+    theGame.rightMove();
+  }
+  if(key === "s"){
+    theGame.dropPiece();
+  }
   if(key === "a"){
     theGame.leftMove();
   }
