@@ -51,7 +51,7 @@ function setup() {
   nextGrid = theGame.nextPiecesGrid();
   theGame.pieceArray[0].insert(); /// fix 
   theGame.nextPiece();
-  //setInterval(() => theGame.dropPiece(), 1000);
+  setInterval(() => theGame.dropPiece(), 1000);
 }
 
 function draw() {
@@ -139,7 +139,7 @@ class Tetris{
   }
 
   setOrder(){
-    for(let i = 0; i < 10; i++){
+    for(let i = 0; i < 100; i++){
       this.pieceOrder.push(floor(random(1,8)));
     }
     for(let i of this.pieceOrder){
@@ -311,6 +311,7 @@ class Tetris{
       this.currentPiece += 1;
       this.pieceArray[this.currentPiece].insert(this.pieceArray[this.currentPiece].template, this.pieceArray[this.currentPiece].color);
       this.score += 36;
+      this.checkForClear();
     }
   }
 
@@ -373,6 +374,15 @@ class Tetris{
   }
 
   checkForClear(){
+    for(let cols = 0; cols < GRID_HEIGHT; cols ++){
+      if(! grid[cols].includes(0)){
+        this.clearLine();
+      }
+    }
+  }
+
+  clearLine(){
+    this.clearGrid();
 
   }
 
@@ -442,7 +452,7 @@ class Tetromino {
       }
     }
 
-    clear();
+    theGame.currentPiece.clear();
     theGame.currentPiece += 1;
   }
   
