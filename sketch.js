@@ -29,6 +29,20 @@ let S_TEMPLATE = [[0,0,1,1],[0,1,1,0]];
 let L_TEMPLATE = [[0,0,1],[1,1,1]]; //[[1,0],[1,0],[1,1]];
 let J_TEMPLATE = [[1,0,0],[1,1,1]]; 
 
+let I_ROTATED = [[1],[1],[1],[1]];
+let T_ROTATE_1 = [[1,0], [1,1], [1,0]];
+let T_ROTATE_2 = [[1,1,1],[0,1,0]];
+let T_ROTATE_3 = [[0,1], [1,1], [0,1]];
+let Z_ROTATED = [[0,1],[1,1],[1,0]];
+let S_ROTATED = [[1,0],[1,1],[0,1]];
+let L_ROTATE_1 = [[1],[1],[1,1]] ;
+let L_ROTATE_2 = [[1,1,1], [1]];
+let L_ROTATE_3 = [[1,1], [0,1], [0,1]];
+let J_ROTATE_1 = [[1,1], [1], [1]];
+let J_ROTATE_2 = [[1,1,1],[0,0,1]];
+let J_ROTATE_3 = [[0,1], [0,1], [1,1]];
+
+
 function preload(){
   mainFont = loadFont("Tetris.ttf");
   gameFont = loadFont("Retro Gaming.ttf");
@@ -383,7 +397,7 @@ class Tetris{
 
   clearLine(){
     this.clearGrid();
-
+    this.score += 100;
   }
 
 }
@@ -464,15 +478,12 @@ class PieceI extends Tetromino {
     super();
     this.x = x;
     this.y = y;
-    this.template = I_TEMPLATE;
+    this.template = I_ROTATED;
     this.color = 1;
-  }
-  update(){
-    super.update(I_TEMPLATE, this.color);
   }
 
   insert(){
-    super.insert(I_TEMPLATE,this.color); ///ADD X Y 
+    super.insert(this.template,this.color); ///ADD X Y 
 
   }
 
@@ -495,7 +506,7 @@ class PieceO extends Tetromino {
   }
 
   insert(){
-    super.insert(O_TEMPLATE, this.color);
+    super.insert(this.template, this.color);
   }
 
   showNext(){
@@ -513,18 +524,14 @@ class PieceT extends Tetromino {
     this.x = x;
     this.y = y;
     this.template = T_TEMPLATE;
+    this.rotated1 = T_ROTATE_1;
+    this.rotated2 = T_ROTATE_2;
+    this.rotated3 = T_ROTATE_3;
     this.color = 3;
   }
 
   insert(){
-    super.insert(T_TEMPLATE, this.color);
-  }
-
-  update(){
-  }
-
-  rotate(){
-    super.insert();
+    super.insert(this.template, this.color);
   }
 
   showNext(){
@@ -546,7 +553,7 @@ class PieceZ extends Tetromino {
   }
 
   insert(){
-    super.insert(Z_TEMPLATE, this.color);
+    super.insert(this.template, this.color);
   }
 
   showNext(){
@@ -616,7 +623,7 @@ class PieceJ extends Tetromino {
   }
 
   insert(){
-    super.insert(J_TEMPLATE, this.color);
+    super.insert(this.template, this.color);
   }
 
   showNext(){
