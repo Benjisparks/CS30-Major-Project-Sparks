@@ -418,6 +418,7 @@ class Tetromino {
     }
   }
 
+
   showNext(template, color){
     for(let col = 0; col < template.length; col ++){
       for(let row = 0; row < template[col].length; row++){
@@ -478,13 +479,18 @@ class PieceI extends Tetromino {
     super();
     this.x = x;
     this.y = y;
-    this.template = I_ROTATED;
+    this.template = I_TEMPLATE;
+    this.rotated = I_ROTATED;
     this.color = 1;
   }
 
   insert(){
     super.insert(this.template,this.color); ///ADD X Y 
 
+  }
+
+  insertRot(){
+    super.insert(this.rotated, this.color);
   }
 
   showNext(){
@@ -524,14 +530,17 @@ class PieceT extends Tetromino {
     this.x = x;
     this.y = y;
     this.template = T_TEMPLATE;
-    this.rotated1 = T_ROTATE_1;
-    this.rotated2 = T_ROTATE_2;
-    this.rotated3 = T_ROTATE_3;
+    this.rotations = [T_ROTATE_1,T_ROTATE_2,T_ROTATE_3];
+    this.currentRotation = 0;
     this.color = 3;
   }
 
   insert(){
     super.insert(this.template, this.color);
+  }
+
+  insertRot(){
+    super.insert(this.rotations[this.currentRotation], this.color);
   }
 
   showNext(){
@@ -550,10 +559,15 @@ class PieceZ extends Tetromino {
     this.y = y;
     this.template = Z_TEMPLATE;
     this.color = 4;
+    this.rotated = Z_ROTATED;
   }
 
   insert(){
     super.insert(this.template, this.color);
+  }
+
+  insertRot(){
+    super.insert(this.rotated,this.color);
   }
 
   showNext(){
@@ -572,14 +586,15 @@ class PieceS extends Tetromino {
     this.y = y; 
     this.template = S_TEMPLATE;
     this.color = 5;
+    this.rotated = S_ROTATED;
   }
 
   insert(){
     super.insert(S_TEMPLATE,this.color);
   }
 
-  update(){
-    super.update(S_TEMPLATE);
+  insertRot(){
+    super.insert(this.rotated, this.color);
   }
 
   showNext(){
@@ -598,10 +613,15 @@ class PieceL extends Tetromino {
     this.y = y;
     this.template = L_TEMPLATE;
     this.color = 6;
+    this.rotations = [L_ROTATE_1, L_ROTATE_2, L_ROTATE_1];
   }
 
   insert(){
     super.insert(L_TEMPLATE, this.color);
+  }
+
+  insertRot(){
+
   }
 
   showNext(){
@@ -620,6 +640,7 @@ class PieceJ extends Tetromino {
     this.y = y;
     this.template = J_TEMPLATE;
     this.color = 7;
+    this.rotations = [J_ROTATE_1,J_ROTATE_2,J_ROTATE_3];
   }
 
   insert(){
