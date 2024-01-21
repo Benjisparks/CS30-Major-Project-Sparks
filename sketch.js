@@ -5,7 +5,6 @@
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 
-let i = 0;
 let grid;
 let holdGrid;
 let nextGrid;
@@ -142,6 +141,16 @@ class Tetris{
     if (this.screen === "menu"){
       this.mainMenu();
     } 
+    else if(this.screen === "game"){  
+      background(220);
+      theGame.displayGrid();
+      theGame.displayHeld();
+      theGame.displayNext();
+      theGame.scoreCounter();
+    }
+    else if(this.screen === "lose"){
+      theGame.lose();
+    }
   }
   
   mainMenu(){
@@ -150,6 +159,15 @@ class Tetris{
     textSize(width/16);
     textAlign("center");
     text("k T h",width/2,height/2);
+  }
+
+  lose(){
+    noLoop();
+    textFont(gameFont);
+    textSize(width/16);
+    textAlign("center");
+    fill("black");
+    text("GAME OVER", width/2, height/2);
   }
 
   setOrder(){
@@ -228,6 +246,7 @@ class Tetris{
   scoreCounter(){
     textFont(gameFont);
     textAlign(RIGHT);
+    fill("black");
     text("SCORE:" + this.score, width /1.5, height/ 4);
   }
 
@@ -309,6 +328,26 @@ class Tetris{
     }
   }
 
+  clearNext(){
+    for(let col = 0; col < NEXT_GRID_H; col ++){
+      for(let row = 0; row < NEXT_GRID_W; row ++){
+        if( nextGrid[col][row] !== 0){
+          nextGrid[col][row] = 0;
+        }
+      }
+    }
+  }
+
+  clearHeld(){
+    for (let col = 0; col < HOLD_GRID_H; col ++){
+      for (let row = 0; row < HOLD_GRID_W; row ++){
+        if(holdGrid[col][row] !== 0 ){
+          holdGrid[col][row] = 0;
+        }
+      }
+    }
+  }
+
   dropPiece(){
     if(this.isValidMove(0,1)) {
       this.pieceArray[this.currentPiece].clear();
@@ -320,12 +359,15 @@ class Tetris{
       this.displayGrid();
 
     }
-    else{
-      //this.lock();
+    else{      
+      this.checkForGameOver();
+      this.checkForClear();
       this.currentPiece += 1;
       this.pieceArray[this.currentPiece].insert(this.pieceArray[this.currentPiece].rotations[this.pieceArray[this.currentPiece].currentRotation], this.pieceArray[this.currentPiece].color);
+      this.clearNext();
+      this.pieceArray[this.currentPiece + 1].showNext(this.pieceArray[this.currentPiece + 1].rotations[0], this.pieceArray[this.currentPiece + 1].color);
       this.score += 36;
-      this.checkForClear();
+
     }
   }
 
@@ -355,7 +397,7 @@ class Tetris{
 
   isValidMove(dx, dy){
     let thePiece = this.pieceArray[this.currentPiece];
-    let theTemplate = thePiece.template;
+    let theTemplate = thePiece.rotations[thePiece.currentRotation];
 
     let newY = thePiece.y + dy;
     let newX = thePiece.x + dx;
@@ -377,7 +419,7 @@ class Tetris{
     else if(dx === - 1){
       for (let col = 0; col < theTemplate.length; col++) {
         for (let row = 0; row < theTemplate[col].length; row++) {
-          if (grid[newY + theTemplate.length - 1][newX - theTemplate[col].length - 1] !== 0) {   //FIIIXIXIXIXXIIXX
+          if (grid[newY + theTemplate.length - 1][newX - theTemplate[col].length - 1] !== 0) {   //newX - 1??
             return false;
           }
         }
@@ -388,6 +430,7 @@ class Tetris{
   }
 
   holdPiece(){
+    this.pieceArray[this.currentPiece].clear();
     this.pieceArray[this.currentPiece].hold();
     this.currentPiece += 1;
   }
@@ -403,6 +446,15 @@ class Tetris{
     for(let cols = 0; cols < GRID_HEIGHT; cols ++){
       if(! grid[cols].includes(0)){
         this.clearLine();
+      }
+    }
+  }
+
+  checkForGameOver(){
+    for(let cell of grid[1]){
+      if(cell !== 0){
+        this.clearGrid();
+        this.screen = "lose";
       }
     }
   }
@@ -471,7 +523,7 @@ class Tetromino {
 
   clear(){
     let thePiece = theGame.pieceArray[theGame.currentPiece];
-    let template = thePiece.template;
+    let template = thePiece.rotations[thePiece.currentRotation];
 
     for (let col = 0; col < template.length; col++) {
       for (let row = 0; row < template[col].length; row++) {
@@ -486,29 +538,33 @@ class Tetromino {
 
   // }
   
-  hold(piece){
-    for(let cols = 0; cols < HOLD_GRID_H; cols++){
-      for(let rows = 0; rows < HOLD_GRID_W; rows++){
-        if(holdGrid[cols][rows] !== 0){
-          holdGrid[cols][rows] = 0;
+  hold(){
+    theGame.clearHeld();
+    let thePiece = theGame.pieceArray[theGame.currentPiece];
+    let theHeld;
+    let template = thePiece.template;
+
+    for (let col = 0; col < template.length; col++) {
+      for (let row = 0; row < template[col].length; row++) {  ////FIX THIS
+        if (template[col][row] === 1) {
+          holdGrid[col][row] = thePiece.color;
         }
       }
     }
 
-    // theGame.heldPiece.length = 0; 
-    // theGame.heldPiece.push(new piece(0,0));
-    let heldPiece = new piece(0,0);
-
-    for (let col = 0; col < heldPiece.template.length; col++) {
-      for (let row = 0; row < heldPiece.template[col].length; row++) {  ////FIX THIS
-        if (heldPiece.template[col][row] === 1) {
-          holdGrid[col][row] = heldPiece.color;
-        }
-      }
+    theGame.pieceArray[theGame.currentPiece].clear();
+    if (theGame.heldPiece.length === 0){
+      theGame.heldPiece.push(thePiece);
+      theGame.currentPiece += 1;      
     }
-
-    theGame.currentPiece.clear();
-    theGame.currentPiece += 1;
+    else{
+      theHeld = theGame.heldPiece[0];
+      theGame.heldPiece.length = 0;
+      theGame.heldPiece.push(thePiece);
+      theHeld.x = 0;
+      theHeld.y = 1;
+      theHeld.insert(theHeld.rotations[theHeld.currentRotation], theHeld.color);
+    }
   }
   
 
@@ -710,11 +766,11 @@ class PieceJ extends Tetromino {
 }
 
 function keyTyped(){
-  i += 1;
   if(key === " "){
-    theGame.clearGrid();
-    theGame.pieceArray[i].insert();
-    theGame.nextPiece();
+    if(theGame.screen === "menu"){
+      theGame.screen = "game";     
+      // setInterval(() => theGame.dropPiece(), 1000);
+    }
   }
   if(key === "c"){
     theGame.pieceArray[theGame.currentPiece].hold();
@@ -730,9 +786,14 @@ function keyTyped(){
     theGame.leftMove();
   }
   if(key === "r"){
-    //theGame.pieceArray[theGame.currentPiece].clear();
+    theGame.pieceArray[theGame.currentPiece].clear();
     if(theGame.pieceArray[theGame.currentPiece] !== PieceO){
-      theGame.pieceArray[theGame.currentPiece].currentRotation += 1;
+      if(theGame.pieceArray[theGame.currentPiece].currentRotation === theGame.pieceArray[theGame.currentPiece].rotations.length - 1){
+        theGame.pieceArray[theGame.currentPiece].currentRotation = 0;
+      }
+      else {
+        theGame.pieceArray[theGame.currentPiece].currentRotation += 1;
+      }
     }
   }
 }
