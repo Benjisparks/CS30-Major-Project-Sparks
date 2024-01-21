@@ -549,11 +549,13 @@ class PieceO extends Tetromino {
     this.x = x; 
     this.y = y;
     this.template = O_TEMPLATE;
+    this.rotations = [O_TEMPLATE, O_TEMPLATE];
     this.color = 2;
+    this.currentRotation = 0;
   }
 
   insert(){
-    super.insert(this.template, this.color);
+    super.insert(this.rotations[this.currentRotation], this.color);
   }
 
   showNext(){
@@ -729,7 +731,9 @@ function keyTyped(){
   }
   if(key === "r"){
     //theGame.pieceArray[theGame.currentPiece].clear();
-    theGame.pieceArray[theGame.currentPiece].currentRotation += 1;
+    if(theGame.pieceArray[theGame.currentPiece] !== PieceO){
+      theGame.pieceArray[theGame.currentPiece].currentRotation += 1;
+    }
   }
 }
 
