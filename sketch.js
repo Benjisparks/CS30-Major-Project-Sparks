@@ -10,6 +10,7 @@ let holdGrid;
 let nextGrid;
 let theGame;
 let music1;
+let clearSound;
 let HOLD_OFFSET;
 let GRID_HEIGHT = 20;
 let GRID_WIDTH = 10;
@@ -46,6 +47,7 @@ function preload(){
   mainFont = loadFont("Tetris.ttf");
   gameFont = loadFont("Retro Gaming.ttf");
   music1 = loadSound("TetrisTheme1.mp3");
+  clearSound = loadSound("cleared.mp3");
 }
 
 function setup() {
@@ -87,6 +89,7 @@ class Tetris{
     this.currentPiece = 0;
     this.heldPiece = [];
     this.music1 = music1;
+    this.sfx = clearSound;
   }
   createGrid(){
     let theGrid = [];
@@ -218,7 +221,8 @@ class Tetris{
   }
 
   playMusic(){
-    this.music1.play();
+    //this.music1.play();
+    this.music1.loop();
   }
 
   holdPieceGrid(){
@@ -476,7 +480,7 @@ class Tetris{
       for (let row = clearedRow - 1; row >= 0; row--) {
         grid[row + 1] = [...grid[row]];
       }
-
+      this.sfx.play();
       this.score += 100;
     }
   }
@@ -768,7 +772,8 @@ class PieceJ extends Tetromino {
 function keyTyped(){
   if(key === " "){
     if(theGame.screen === "menu"){
-      theGame.screen = "game";     
+      theGame.screen = "game"; 
+      theGame.playMusic();    
       // setInterval(() => theGame.dropPiece(), 1000);
     }
   }
