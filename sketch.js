@@ -21,12 +21,12 @@ let NEXT_GRID_W = 4;
 let cellSize;
 let mainFont, gameFont;
 
-let I_TEMPLATE = [[1,1,1,1]]; // [[1],[1],[1],[1]]];
+let I_TEMPLATE = [[1,1,1,1]]; 
 let O_TEMPLATE = [[1,1],[1,1]];
 let T_TEMPLATE = [[0,1,0],[1,1,1]];
 let Z_TEMPLATE = [[0,1,1,0],[0,0,1,1]];
 let S_TEMPLATE = [[0,0,1,1],[0,1,1,0]];
-let L_TEMPLATE = [[0,0,1],[1,1,1]]; //[[1,0],[1,0],[1,1]];
+let L_TEMPLATE = [[0,0,1],[1,1,1]]; 
 let J_TEMPLATE = [[1,0,0],[1,1,1]]; 
 
 let I_ROTATED = [[1],[1],[1],[1]];
@@ -63,7 +63,7 @@ function setup() {
   grid = theGame.createGrid();
   holdGrid = theGame.holdPieceGrid();
   nextGrid = theGame.nextPiecesGrid();
-  theGame.pieceArray[0].insert(); /// fix 
+  theGame.pieceArray[theGame.currentPiece].insert(theGame.pieceArray[theGame.currentPiece].rotations[theGame.pieceArray[theGame.currentPiece].currentRotation], theGame.pieceArray[theGame.currentPiece].color); /// fix 
   theGame.nextPiece();
   setInterval(() => theGame.dropPiece(), 1000);
 }
@@ -315,7 +315,7 @@ class Tetris{
 
       this.pieceArray[this.currentPiece].y++;
 
-      this.pieceArray[this.currentPiece].insert(this.pieceArray[this.currentPiece].template, this.pieceArray[this.currentPiece].color);
+      this.pieceArray[this.currentPiece].insert(this.pieceArray[this.currentPiece].rotations[this.pieceArray[this.currentPiece].currentRotation], this.pieceArray[this.currentPiece].color);
 
       this.displayGrid();
 
@@ -323,7 +323,7 @@ class Tetris{
     else{
       //this.lock();
       this.currentPiece += 1;
-      this.pieceArray[this.currentPiece].insert(this.pieceArray[this.currentPiece].template, this.pieceArray[this.currentPiece].color);
+      this.pieceArray[this.currentPiece].insert(this.pieceArray[this.currentPiece].rotations[this.pieceArray[this.currentPiece].currentRotation], this.pieceArray[this.currentPiece].color);
       this.score += 36;
       this.checkForClear();
     }
@@ -333,9 +333,9 @@ class Tetris{
     if(this.isValidMove(-1,0)){
       this.pieceArray[this.currentPiece].clear();
 
-      this.pieceArray[this.currentPiece].x --;
+      this.pieceArray[this.currentPiece].x--;
 
-      this.pieceArray[this.currentPiece].insert(this.pieceArray[this.currentPiece].template, this.pieceArray[this.currentPiece].color);
+      this.pieceArray[this.currentPiece].insert(this.pieceArray[this.currentPiece].rotations[this.pieceArray[this.currentPiece].currentRotation], this.pieceArray[this.currentPiece].color);
 
       this.displayGrid();
     }
@@ -345,9 +345,9 @@ class Tetris{
     if(this.isValidMove(1,0)){
       this.pieceArray[this.currentPiece].clear();
 
-      this.pieceArray[this.currentPiece].x ++;
+      this.pieceArray[this.currentPiece].x++;
 
-      this.pieceArray[this.currentPiece].insert(this.pieceArray[this.currentPiece].template, this.pieceArray[this.currentPiece].color);
+      this.pieceArray[this.currentPiece].insert(this.pieceArray[this.currentPiece].rotations[this.pieceArray[this.currentPiece].currentRotation], this.pieceArray[this.currentPiece].color);
 
       this.displayGrid();
     }
@@ -364,10 +364,22 @@ class Tetris{
       return false;
     }
     
-    for (let col = 0; col < GRID_HEIGHT; col++) {
-      for (let row = 0; row < GRID_WIDTH; row++) {
-        if (grid[newY + theTemplate.length - 1][newX + theTemplate[0].length -1] !== 0) {   //FIIIXIXIXIXXIIXX
-          return false;
+    if(dx === 0 || dx === 1){
+      for (let col = 0; col < theTemplate.length; col++) {
+        for (let row = 0; row < theTemplate[col].length; row++) {
+          if (grid[newY + theTemplate.length -1][newX + theTemplate[col].length - 1] !== 0) {   //FIIIXIXIXIXXIIXX
+            return false;
+          }
+        }
+      }
+    }
+
+    else if(dx === - 1){
+      for (let col = 0; col < theTemplate.length; col++) {
+        for (let row = 0; row < theTemplate[col].length; row++) {
+          if (grid[newY + theTemplate.length - 1][newX - theTemplate[col].length - 1] !== 0) {   //FIIIXIXIXIXXIIXX
+            return false;
+          }
         }
       }
     }
@@ -396,8 +408,25 @@ class Tetris{
   }
 
   clearLine(){
-    this.clearGrid();
-    this.score += 100;
+    // this.clearGrid();
+    let clearedRow = -1;
+
+    for (let row = GRID_HEIGHT - 1; row >= 0; row--) {
+      if (!grid[row].includes(0)) {
+        clearedRow = row;
+        break;
+      }
+    }
+
+    if (clearedRow !== -1) {
+      grid.splice(clearedRow, 1);
+      grid.unshift(new Array(GRID_WIDTH).fill(0));
+      for (let row = clearedRow - 1; row >= 0; row--) {
+        grid[row + 1] = [...grid[row]];
+      }
+
+      this.score += 100;
+    }
   }
 
 }
@@ -418,6 +447,17 @@ class Tetromino {
     }
   }
 
+  insertRot(rotatedTemplate){
+    this.clear();
+
+    for (let col = 0; col < rotatedTemplate.length; col++) {
+      for (let row = 0; row < rotatedTemplate[col].length; row++) {
+        if (rotatedTemplate[col][row] === 1) {
+          grid[this.y + col][this.x + row] = this.color;
+        }
+      }
+    }
+  }
 
   showNext(template, color){
     for(let col = 0; col < template.length; col ++){
@@ -480,12 +520,13 @@ class PieceI extends Tetromino {
     this.x = x;
     this.y = y;
     this.template = I_TEMPLATE;
-    this.rotated = I_ROTATED;
+    this.rotations = [I_TEMPLATE, I_ROTATED];
+    this.currentRotation = 0;
     this.color = 1;
   }
 
   insert(){
-    super.insert(this.template,this.color); ///ADD X Y 
+    super.insert(this.rotations[this.currentRotation],this.color); ///ADD X Y 
 
   }
 
@@ -530,16 +571,16 @@ class PieceT extends Tetromino {
     this.x = x;
     this.y = y;
     this.template = T_TEMPLATE;
-    this.rotations = [T_ROTATE_1,T_ROTATE_2,T_ROTATE_3];
+    this.rotations = [T_TEMPLATE, T_ROTATE_1,T_ROTATE_2,T_ROTATE_3];
     this.currentRotation = 0;
     this.color = 3;
   }
 
-  insert(){
-    super.insert(this.template, this.color);
-  }
+  // insert(){
+  //   super.insert(this.template, this.color);
+  // }
 
-  insertRot(){
+  insert(){
     super.insert(this.rotations[this.currentRotation], this.color);
   }
 
@@ -560,10 +601,12 @@ class PieceZ extends Tetromino {
     this.template = Z_TEMPLATE;
     this.color = 4;
     this.rotated = Z_ROTATED;
+    this.rotations = [Z_TEMPLATE, Z_ROTATED];
+    this.currentRotation = 0;
   }
 
   insert(){
-    super.insert(this.template, this.color);
+    super.insert(this.rotations[this.currentRotation], this.color);
   }
 
   insertRot(){
@@ -587,10 +630,12 @@ class PieceS extends Tetromino {
     this.template = S_TEMPLATE;
     this.color = 5;
     this.rotated = S_ROTATED;
+    this.rotations = [S_TEMPLATE, S_ROTATED];
+    this.currentRotation = 0;
   }
 
   insert(){
-    super.insert(S_TEMPLATE,this.color);
+    super.insert(this.rotations[this.currentRotation],this.color);
   }
 
   insertRot(){
@@ -613,11 +658,12 @@ class PieceL extends Tetromino {
     this.y = y;
     this.template = L_TEMPLATE;
     this.color = 6;
-    this.rotations = [L_ROTATE_1, L_ROTATE_2, L_ROTATE_1];
+    this.rotations = [L_TEMPLATE, L_ROTATE_1, L_ROTATE_2, L_ROTATE_1];
+    this.currentRotation = 0;
   }
 
   insert(){
-    super.insert(L_TEMPLATE, this.color);
+    super.insert(this.rotations[this.currentRotation], this.color);
   }
 
   insertRot(){
@@ -640,11 +686,16 @@ class PieceJ extends Tetromino {
     this.y = y;
     this.template = J_TEMPLATE;
     this.color = 7;
-    this.rotations = [J_ROTATE_1,J_ROTATE_2,J_ROTATE_3];
+    this.rotations = [J_TEMPLATE, J_ROTATE_1,J_ROTATE_2,J_ROTATE_3];
+    this.currentRotation = 0;
   }
 
   insert(){
-    super.insert(this.template, this.color);
+    super.insert(this.rotations[this.currentRotation], this.color);
+  }
+
+  insertRot(){
+
   }
 
   showNext(){
@@ -675,6 +726,10 @@ function keyTyped(){
   }
   if(key === "a"){
     theGame.leftMove();
+  }
+  if(key === "r"){
+    //theGame.pieceArray[theGame.currentPiece].clear();
+    theGame.pieceArray[theGame.currentPiece].currentRotation += 1;
   }
 }
 
