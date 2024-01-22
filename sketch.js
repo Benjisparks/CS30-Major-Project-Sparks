@@ -553,6 +553,7 @@ class Tetromino {  //Starting class for all pieces
     }
     else{
       theHeld = theGame.heldPiece[0];
+      theGame.pieceArray[theGame.currentPiece] = theHeld;
       theGame.heldPiece.length = 0;
       theGame.heldPiece.push(thePiece);
       theHeld.x = 0;
@@ -586,7 +587,7 @@ class PieceI extends Tetromino {
   }
   
   hold(){
-    super.hold(PieceI);
+    super.hold();
   }
 }
 
@@ -610,7 +611,7 @@ class PieceO extends Tetromino {
   }
 
   hold(){
-    super.hold(PieceO);
+    super.hold();
   }
 }
 
@@ -638,7 +639,7 @@ class PieceT extends Tetromino {
   }
 
   hold(){
-    super.hold(PieceT);
+    super.hold();
   }
 }
 
@@ -663,7 +664,7 @@ class PieceZ extends Tetromino {
   }
 
   hold(){
-    super.hold(PieceZ);
+    super.hold();
   }
 }
 
@@ -688,7 +689,7 @@ class PieceS extends Tetromino {
   }
 
   hold(){
-    super.hold(PieceS);
+    super.hold();
   }
 }
 
@@ -712,7 +713,7 @@ class PieceL extends Tetromino {
   }
 
   hold(){
-    super.hold(PieceL);
+    super.hold();
   }
 }
 
@@ -736,7 +737,7 @@ class PieceJ extends Tetromino {
   }
 
   hold(){
-    super.hold(PieceJ);
+    super.hold();
   }
 }
 
@@ -773,25 +774,3 @@ function keyTyped(){
     }
   }
 }
-
-// function createGrid(){
-//   let theGrid = [];
-//   for(let cols = 0; cols < GRID_HEIGHT; cols ++){
-//     theGrid.push([]);
-//     for(let rows = 0; rows < GRID_WIDTH; rows ++){
-//       theGrid[cols].push(0);
-//     }
-//   }
-//   return theGrid;
-// }
-
-// function displayGrid(){
-//   for ( let cols = 0; cols <= GRID_HEIGHT; cols++){
-//     for(let rows = 0; rows <= GRID_WIDTH; rows ++){
-//       if(grid[cols][rows] === 0){
-//         fill("grey");
-//         rect(rows*cellSize,cols*cellSize,cellSize,cellSize);
-//       }
-//     }
-//   }
-// }
