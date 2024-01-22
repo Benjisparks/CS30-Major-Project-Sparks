@@ -1,31 +1,31 @@
-// Project Title
-// Your Name
-// Date
+// Major Project Tetris Clone
+// Benjamin Sparks
+// 1/21/2024
 //
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 
 let grid;
-let holdGrid;
+let holdGrid;  //declare grid variables
 let nextGrid;
-let theGame;
-let music1;
+let theGame;    
+let music1;    //declare sound variables
 let clearSound;
-let HOLD_OFFSET;
+let HOLD_OFFSET;    
 let GRID_HEIGHT = 20;
 let GRID_WIDTH = 10;
 let HOLD_GRID_H =  3;
-let HOLD_GRID_W = 4;
+let HOLD_GRID_W = 4;   //Define constant grid sizes
 let NEXT_GRID_H = 3;
 let NEXT_GRID_W = 4;
 let cellSize;
-let mainFont, gameFont;
+let mainFont, gameFont;  //Declare font variables
 
 let I_TEMPLATE = [[1,1,1,1]]; 
 let O_TEMPLATE = [[1,1],[1,1]];
 let T_TEMPLATE = [[0,1,0],[1,1,1]];
-let Z_TEMPLATE = [[0,1,1,0],[0,0,1,1]];
-let S_TEMPLATE = [[0,0,1,1],[0,1,1,0]];
+let Z_TEMPLATE = [[1,1,0],[0,1,1]];
+let S_TEMPLATE = [[0,1,1],[1,1,0]];   //Create basic templates for all pieces
 let L_TEMPLATE = [[0,0,1],[1,1,1]]; 
 let J_TEMPLATE = [[1,0,0],[1,1,1]]; 
 
@@ -34,7 +34,7 @@ let T_ROTATE_1 = [[1,0], [1,1], [1,0]];
 let T_ROTATE_2 = [[1,1,1],[0,1,0]];
 let T_ROTATE_3 = [[0,1], [1,1], [0,1]];
 let Z_ROTATED = [[0,1],[1,1],[1,0]];
-let S_ROTATED = [[1,0],[1,1],[0,1]];
+let S_ROTATED = [[1,0],[1,1],[0,1]];  //Create rotated templates for all pieces
 let L_ROTATE_1 = [[1],[1],[1,1]] ;
 let L_ROTATE_2 = [[1,1,1], [1]];
 let L_ROTATE_3 = [[1,1], [0,1], [0,1]];
@@ -46,7 +46,7 @@ let J_ROTATE_3 = [[0,1], [0,1], [1,1]];
 function preload(){
   mainFont = loadFont("Tetris.ttf");
   gameFont = loadFont("Retro Gaming.ttf");
-  music1 = loadSound("TetrisTheme1.mp3");
+  music1 = loadSound("TetrisTheme1.mp3");  //Preload fonts and sfx
   clearSound = loadSound("cleared.mp3");
 }
 
@@ -78,7 +78,7 @@ function draw() {
   //theGame.runGame();
 }
 
-class Tetris{
+class Tetris{  //Main game class
   constructor(){
     this.screen = "menu";
     this.score = 0;
@@ -221,7 +221,6 @@ class Tetris{
   }
 
   playMusic(){
-    //this.music1.play();
     this.music1.loop();
   }
 
@@ -410,7 +409,7 @@ class Tetris{
       return false;
     }
     
-    if(dx === 0 || dx === 1){
+    if(dx === 0){
       for (let col = 0; col < theTemplate.length; col++) {
         for (let row = 0; row < theTemplate[col].length; row++) {
           if (grid[newY + theTemplate.length -1][newX + theTemplate[col].length - 1] !== 0) {   //FIIIXIXIXIXXIIXX
@@ -420,12 +419,18 @@ class Tetris{
       }
     }
 
-    else if(dx === - 1){
-      for (let col = 0; col < theTemplate.length; col++) {
-        for (let row = 0; row < theTemplate[col].length; row++) {
-          if (grid[newY + theTemplate.length - 1][newX - theTemplate[col].length - 1] !== 0) {   //newX - 1??
-            return false;
-          }
+    else if(dx === 1){
+      for (let col = 0; col < theTemplate.length; col ++){
+        if(theTemplate[col][theTemplate[col].length-1] === 1 && grid[newY + col][newX + theTemplate[col].length - 1] !== 0){
+          return false;
+        }
+      }
+    }
+
+    else if( dx === -1){
+      for(let col = 0; col < theTemplate.length; col ++){
+        if(theTemplate[col][0] === 1 && grid[newY + col][newX] !== 0 || (theTemplate[col][0] === 0 && theTemplate[col][1] === 1 && grid[newY+col][thePiece.x] !== 0) ){
+          return false;
         }
       }
     }
@@ -487,13 +492,13 @@ class Tetris{
 
 }
 
-class Tetromino {
+class Tetromino {  //Starting class for all pieces 
   constructor(){
     this.y = 1;
     this.x = 0;
   }
 
-  insert(template, color){
+  insert(template, color){ //insert the piece into the grid 
     for(let col = 0; col < template.length; col ++){
       for(let row = 0; row < template[col].length; row++){
         if(template[col][row] === 1){
@@ -503,19 +508,8 @@ class Tetromino {
     }
   }
 
-  insertRot(rotatedTemplate){
-    this.clear();
 
-    for (let col = 0; col < rotatedTemplate.length; col++) {
-      for (let row = 0; row < rotatedTemplate[col].length; row++) {
-        if (rotatedTemplate[col][row] === 1) {
-          grid[this.y + col][this.x + row] = this.color;
-        }
-      }
-    }
-  }
-
-  showNext(template, color){
+  showNext(template, color){ //Insert a piece into the next up grid
     for(let col = 0; col < template.length; col ++){
       for(let row = 0; row < template[col].length; row++){
         if(template[col][row] === 1){
@@ -525,7 +519,7 @@ class Tetromino {
     }
   }
 
-  clear(){
+  clear(){ //remove a piece from the grid 
     let thePiece = theGame.pieceArray[theGame.currentPiece];
     let template = thePiece.rotations[thePiece.currentRotation];
 
@@ -537,12 +531,8 @@ class Tetromino {
       }
     }
   }
-
-  // lock(){
-
-  // }
-  
-  hold(){
+ 
+  hold(){ //hold current piece and put it in held grid
     theGame.clearHeld();
     let thePiece = theGame.pieceArray[theGame.currentPiece];
     let theHeld;
@@ -574,6 +564,7 @@ class Tetromino {
 
 }
 
+//Subclasses of Tetromino for each piece 
 class PieceI extends Tetromino {
   constructor(x,y){
     super();
@@ -588,10 +579,6 @@ class PieceI extends Tetromino {
   insert(){
     super.insert(this.rotations[this.currentRotation],this.color); ///ADD X Y 
 
-  }
-
-  insertRot(){
-    super.insert(this.rotated, this.color);
   }
 
   showNext(){
@@ -671,10 +658,6 @@ class PieceZ extends Tetromino {
     super.insert(this.rotations[this.currentRotation], this.color);
   }
 
-  insertRot(){
-    super.insert(this.rotated,this.color);
-  }
-
   showNext(){
     super.showNext(this.template, this.color);
   }
@@ -700,10 +683,6 @@ class PieceS extends Tetromino {
     super.insert(this.rotations[this.currentRotation],this.color);
   }
 
-  insertRot(){
-    super.insert(this.rotated, this.color);
-  }
-
   showNext(){
     super.showNext(this.template, this.color);
   }
@@ -720,16 +699,12 @@ class PieceL extends Tetromino {
     this.y = y;
     this.template = L_TEMPLATE;
     this.color = 6;
-    this.rotations = [L_TEMPLATE, L_ROTATE_1, L_ROTATE_2, L_ROTATE_1];
+    this.rotations = [L_TEMPLATE, L_ROTATE_1, L_ROTATE_2, L_ROTATE_3];
     this.currentRotation = 0;
   }
 
   insert(){
     super.insert(this.rotations[this.currentRotation], this.color);
-  }
-
-  insertRot(){
-
   }
 
   showNext(){
@@ -754,10 +729,6 @@ class PieceJ extends Tetromino {
 
   insert(){
     super.insert(this.rotations[this.currentRotation], this.color);
-  }
-
-  insertRot(){
-
   }
 
   showNext(){
