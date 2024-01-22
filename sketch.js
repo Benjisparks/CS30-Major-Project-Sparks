@@ -3,7 +3,8 @@
 // 1/21/2024
 //
 // Extra for Experts:
-// - describe what you did to take this project "above and beyond"
+// The hardest parts of this project was the movement and collision detection of pieces, and clearing/shifting down lines which required research(see clearLine Function) The  
+//Hold function was another that took some work. This project really helped expand my knowledge of OOP and Arrays in Javascript
 
 let grid;
 let holdGrid;  //declare grid variables
@@ -21,6 +22,7 @@ let NEXT_GRID_W = 4;
 let cellSize;
 let mainFont, gameFont;  //Declare font variables
 
+let autoDrop;
 let I_TEMPLATE = [[1,1,1,1]]; 
 let O_TEMPLATE = [[1,1],[1,1]];
 let T_TEMPLATE = [[0,1,0],[1,1,1]];
@@ -58,31 +60,24 @@ function setup() {
   else {
     cellSize = height/GRID_HEIGHT;
   }
-  HOLD_OFFSET = windowWidth/3.5;
+  HOLD_OFFSET = cellSize *12;
   theGame = new Tetris();
   theGame.setOrder();
-  grid = theGame.createGrid();
+  grid = theGame.createGrid();        //Creating game object and grid, first piece in grid
   holdGrid = theGame.holdPieceGrid();
   nextGrid = theGame.nextPiecesGrid();
   theGame.pieceArray[theGame.currentPiece].insert(theGame.pieceArray[theGame.currentPiece].rotations[theGame.pieceArray[theGame.currentPiece].currentRotation], theGame.pieceArray[theGame.currentPiece].color); /// fix 
   theGame.nextPiece();
-  setInterval(() => theGame.dropPiece(), 1000);
 }
 
 function draw() {
-  background(220);
-  theGame.displayGrid();
-  theGame.displayHeld();
-  theGame.displayNext();
-  theGame.scoreCounter();
-  //theGame.runGame();
+  theGame.runGame();  //p5Js draw loop
 }
 
 class Tetris{  //Main game class
   constructor(){
     this.screen = "menu";
     this.score = 0;
-    //this.timer = millis();
     this.level = 1;
     this.pieceOrder = [];
     this.pieceArray =[];
@@ -92,7 +87,7 @@ class Tetris{  //Main game class
     this.sfx = clearSound;
   }
   createGrid(){
-    let theGrid = [];
+    let theGrid = [];       //Creates the game board
     for(let cols = 0; cols < GRID_HEIGHT; cols ++){
       theGrid.push([]);
       for(let rows = 0; rows < GRID_WIDTH; rows ++){
@@ -102,7 +97,7 @@ class Tetris{  //Main game class
     return theGrid;
   }
 
-  displayGrid(){
+  displayGrid(){  //displays the game board
     for ( let cols = 0; cols < GRID_HEIGHT; cols++){
       for(let rows = 0; rows < GRID_WIDTH; rows ++){
         if(grid[cols][rows] === 0){
@@ -140,7 +135,7 @@ class Tetris{  //Main game class
       }
     }
   }
-  runGame(){
+  runGame(){  //Main game loop function
     if (this.screen === "menu"){
       this.mainMenu();
     } 
@@ -156,24 +151,29 @@ class Tetris{  //Main game class
     }
   }
   
-  mainMenu(){
+  mainMenu(){  //Main Menu text
     background("grey");
     textFont(mainFont);
-    textSize(width/16);
+    textSize(width/15);
     textAlign("center");
     text("k T h",width/2,height/2);
+    textFont(gameFont);
+    textSize(width/35);
+    textAlign("center");
+    text("Press a,s,d to move pieces, C to hold, and R to rotate", windowWidth/2, windowHeight - 100);
   }
 
-  lose(){
+  lose(){ //Game handling a loss, stopping draw loop and game and writing game over text
     noLoop();
+    clearInterval(autoDrop);
     textFont(gameFont);
-    textSize(width/16);
+    textSize(width/15);
     textAlign("center");
     fill("black");
     text("GAME OVER", width/2, height/2);
   }
 
-  setOrder(){
+  setOrder(){ //setting the order of the pieces randomly
     for(let i = 0; i < 100; i++){
       this.pieceOrder.push(floor(random(1,8)));
     }
@@ -210,7 +210,7 @@ class Tetris{  //Main game class
     return this.pieceArray , this.pieceOrder;
   }
 
-  clearGrid(){
+  clearGrid(){  //clear everything from the grid
     for ( let cols = 0; cols < GRID_HEIGHT; cols++){
       for(let rows = 0; rows < GRID_WIDTH; rows ++){
         if(grid[cols][rows] !== 0){
@@ -220,11 +220,11 @@ class Tetris{  //Main game class
     }
   }
 
-  playMusic(){
+  playMusic(){ //play music
     this.music1.loop();
   }
 
-  holdPieceGrid(){
+  holdPieceGrid(){ //creates the grid for showing a held piece
     let thisGrid = [];
     for(let cols = 0; cols < HOLD_GRID_H; cols ++){
       thisGrid.push([]);
@@ -235,7 +235,7 @@ class Tetris{  //Main game class
     return thisGrid;
   }
 
-  nextPiecesGrid(){
+  nextPiecesGrid(){ //creates the grid for showing the next piece
     let thisGrid = [];
     for(let cols = 0; cols < NEXT_GRID_H; cols ++){
       thisGrid.push([]);
@@ -246,14 +246,15 @@ class Tetris{  //Main game class
     return thisGrid;
   }
 
-  scoreCounter(){
+  scoreCounter(){ //draws the score counter to the screen
     textFont(gameFont);
     textAlign(RIGHT);
+    textSize(width/18);
     fill("black");
     text("SCORE:" + this.score, width /1.5, height/ 4);
   }
 
-  displayHeld(){
+  displayHeld(){ //shows the held piece grid
     for(let cols = 0; cols < HOLD_GRID_H; cols ++){
       for(let rows = 0; rows < HOLD_GRID_W; rows++){
         if(holdGrid[cols][rows] === 0){
@@ -292,7 +293,7 @@ class Tetris{  //Main game class
     }
   }
 
-  displayNext(){
+  displayNext(){ //shows the next piece up grid
     for(let cols = 0; cols < NEXT_GRID_H; cols ++){
       for(let rows = 0; rows < NEXT_GRID_W; rows++){
         if(nextGrid[cols][rows] === 0){
@@ -331,7 +332,7 @@ class Tetris{  //Main game class
     }
   }
 
-  clearNext(){
+  clearNext(){ //empties the next up grid
     for(let col = 0; col < NEXT_GRID_H; col ++){
       for(let row = 0; row < NEXT_GRID_W; row ++){
         if( nextGrid[col][row] !== 0){
@@ -341,7 +342,7 @@ class Tetris{  //Main game class
     }
   }
 
-  clearHeld(){
+  clearHeld(){ //empties the held piece grid
     for (let col = 0; col < HOLD_GRID_H; col ++){
       for (let row = 0; row < HOLD_GRID_W; row ++){
         if(holdGrid[col][row] !== 0 ){
@@ -351,7 +352,7 @@ class Tetris{  //Main game class
     }
   }
 
-  dropPiece(){
+  dropPiece(){ //checks if piece can move down, and moves piece accordingly
     if(this.isValidMove(0,1)) {
       this.pieceArray[this.currentPiece].clear();
 
@@ -363,18 +364,19 @@ class Tetris{  //Main game class
 
     }
     else{      
-      this.checkForGameOver();
-      this.checkForClear();
+      this.checkForGameOver(); //see if the player lost
+      this.checkForClear(); // see if the player cleared a line
+      this.checkForLevelUp();
       this.currentPiece += 1;
       this.pieceArray[this.currentPiece].insert(this.pieceArray[this.currentPiece].rotations[this.pieceArray[this.currentPiece].currentRotation], this.pieceArray[this.currentPiece].color);
-      this.clearNext();
+      this.clearNext(); //moves to next piece
       this.pieceArray[this.currentPiece + 1].showNext(this.pieceArray[this.currentPiece + 1].rotations[0], this.pieceArray[this.currentPiece + 1].color);
       this.score += 36;
 
     }
   }
 
-  leftMove(){
+  leftMove(){ //moves piece left if possible
     if(this.isValidMove(-1,0)){
       this.pieceArray[this.currentPiece].clear();
 
@@ -386,7 +388,7 @@ class Tetris{  //Main game class
     }
   }
 
-  rightMove(){
+  rightMove(){ //moves piece right if possible
     if(this.isValidMove(1,0)){
       this.pieceArray[this.currentPiece].clear();
 
@@ -398,28 +400,26 @@ class Tetris{  //Main game class
     }
   }
 
-  isValidMove(dx, dy){
+  isValidMove(dx, dy){ //sees if a piece can move
     let thePiece = this.pieceArray[this.currentPiece];
     let theTemplate = thePiece.rotations[thePiece.currentRotation];
 
     let newY = thePiece.y + dy;
     let newX = thePiece.x + dx;
 
-    if (newY < 0 || newY + theTemplate.length > GRID_HEIGHT || newX < 0 || newX + theTemplate[0].length > GRID_WIDTH){
+    if (newY < 0 || newY + theTemplate.length > GRID_HEIGHT || newX < 0 || newX + theTemplate[0].length > GRID_WIDTH){ //checks if piece is going out of bounds
       return false;
     }
     
-    if(dx === 0){
-      for (let col = 0; col < theTemplate.length; col++) {
-        for (let row = 0; row < theTemplate[col].length; row++) {
-          if (grid[newY + theTemplate.length -1][newX + theTemplate[col].length - 1] !== 0) {   //FIIIXIXIXIXXIIXX
-            return false;
-          }
+    if(dx === 0){ //checks below the piece for downward movement
+      for(let row = 0; row < theTemplate[theTemplate.length -1].length; row++){
+        if(theTemplate[theTemplate.length -1][row] === 1 && grid[newY + theTemplate.length - 1][newX + row] !== 0){
+          return false;
         }
       }
     }
 
-    else if(dx === 1){
+    else if(dx === 1){ //checks to the right
       for (let col = 0; col < theTemplate.length; col ++){
         if(theTemplate[col][theTemplate[col].length-1] === 1 && grid[newY + col][newX + theTemplate[col].length - 1] !== 0){
           return false;
@@ -427,7 +427,7 @@ class Tetris{  //Main game class
       }
     }
 
-    else if( dx === -1){
+    else if( dx === -1){ //checks to the left
       for(let col = 0; col < theTemplate.length; col ++){
         if(theTemplate[col][0] === 1 && grid[newY + col][newX] !== 0 || (theTemplate[col][0] === 0 && theTemplate[col][1] === 1 && grid[newY+col][thePiece.x] !== 0) ){
           return false;
@@ -438,20 +438,20 @@ class Tetris{  //Main game class
 
   }
 
-  holdPiece(){
+  holdPiece(){ //holds current piece
     this.pieceArray[this.currentPiece].clear();
     this.pieceArray[this.currentPiece].hold();
     this.currentPiece += 1;
   }
 
-  nextPiece(){
+  nextPiece(){ //moves to next piece and refreshes order if needed
     this.pieceArray[this.currentPiece + 1].showNext();
     if(this.currentPiece + 1 === (this.pieceArray.length -1)){
       this.setOrder();
     }
   }
 
-  checkForClear(){
+  checkForClear(){ //checks if all the tiles in a row are cleared
     for(let cols = 0; cols < GRID_HEIGHT; cols ++){
       if(! grid[cols].includes(0)){
         this.clearLine();
@@ -459,7 +459,7 @@ class Tetris{  //Main game class
     }
   }
 
-  checkForGameOver(){
+  checkForGameOver(){ // sees if a piece is too high up
     for(let cell of grid[1]){
       if(cell !== 0){
         this.clearGrid();
@@ -468,22 +468,44 @@ class Tetris{  //Main game class
     }
   }
 
-  clearLine(){
-    // this.clearGrid();
+  checkForLevelUp(){ // see if score is high enough to increase the speed of pieces
+    if (this.score > 5000){
+      clearInterval(autoDrop);
+      autoDrop = setInterval(() => theGame.dropPiece(), 500);
+    }
+    else if (this.score > 4000){
+      clearInterval(autoDrop);
+      autoDrop = setInterval(() => theGame.dropPiece(), 600);
+    }
+    else if (this.score > 3000){
+      clearInterval(autoDrop);
+      autoDrop = setInterval(() => theGame.dropPiece(), 700);
+    }
+    else if (this.score > 2000){
+      clearInterval(autoDrop);
+      autoDrop = setInterval(() => theGame.dropPiece(), 800);
+    }
+    else if (this.score > 1000){
+      clearInterval(autoDrop);
+      autoDrop = setInterval(() => theGame.dropPiece(), 900);
+    }
+  }
+
+  clearLine(){ // clears the full line and shifts other rows down
     let clearedRow = -1;
 
     for (let row = GRID_HEIGHT - 1; row >= 0; row--) {
       if (!grid[row].includes(0)) {
         clearedRow = row;
-        break;
+        break;  // had to research what the break function does in javascript
       }
     }
 
     if (clearedRow !== -1) {
       grid.splice(clearedRow, 1);
-      grid.unshift(new Array(GRID_WIDTH).fill(0));
+      grid.unshift(new Array(GRID_WIDTH).fill(0)); //required research of arrays past what we did in class Source: https://www.w3schools.com/js/js_arrays.asp
       for (let row = clearedRow - 1; row >= 0; row--) {
-        grid[row + 1] = [...grid[row]];
+        grid[row + 1] = [...grid[row]];  // required research into spread syntax and shallow copies Source: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax
       }
       this.sfx.play();
       this.score += 100;
@@ -569,16 +591,16 @@ class Tetromino {  //Starting class for all pieces
 class PieceI extends Tetromino {
   constructor(x,y){
     super();
-    this.x = x;
+    this.x = x; //X & Y
     this.y = y;
-    this.template = I_TEMPLATE;
-    this.rotations = [I_TEMPLATE, I_ROTATED];
-    this.currentRotation = 0;
-    this.color = 1;
+    this.template = I_TEMPLATE; // base template
+    this.rotations = [I_TEMPLATE, I_ROTATED]; //array of all templates
+    this.currentRotation = 0; //current rotation
+    this.color = 1; //Number that gets set into grid to detemine color to fill
   }
 
   insert(){
-    super.insert(this.rotations[this.currentRotation],this.color); ///ADD X Y 
+    super.insert(this.rotations[this.currentRotation],this.color); 
 
   }
 
@@ -625,10 +647,6 @@ class PieceT extends Tetromino {
     this.currentRotation = 0;
     this.color = 3;
   }
-
-  // insert(){
-  //   super.insert(this.template, this.color);
-  // }
 
   insert(){
     super.insert(this.rotations[this.currentRotation], this.color);
@@ -741,35 +759,55 @@ class PieceJ extends Tetromino {
   }
 }
 
-function keyTyped(){
-  if(key === " "){
+function keyTyped(){ //Handling Key events 
+  if(key === " "){ //starts the game from the menu screen
     if(theGame.screen === "menu"){
-      theGame.screen = "game"; 
+      theGame.screen = "game";
+      background(220);
       theGame.playMusic();    
-      // setInterval(() => theGame.dropPiece(), 1000);
+      autoDrop = setInterval(() => theGame.dropPiece(), 1000);
+    }
+
+    else if(theGame.screen === "lose"){
+      loop();
+      theGame.music1.stop();
+      theGame.screen = "menu";
+      theGame.mainMenu();
+      theGame.clearGrid();
+      theGame.score = 0;
     }
   }
-  if(key === "c"){
-    theGame.pieceArray[theGame.currentPiece].hold();
+  if(key === "c"){ //holds current piece
+    if(theGame.screen === "game"){
+      theGame.pieceArray[theGame.currentPiece].hold();
+    }
   }
 
   if(key === "d"){
-    theGame.rightMove();
+    if(theGame.screen === "game"){
+      theGame.rightMove(); //moves to right
+    }
   }
-  if(key === "s"){
-    theGame.dropPiece();
+  if(key === "s"){ //moves down
+    if(theGame.screen === "game"){
+      theGame.dropPiece();
+    }
   }
-  if(key === "a"){
-    theGame.leftMove();
+  if(key === "a"){ //moves to left
+    if(theGame.screen === "game"){
+      theGame.leftMove();
+    }
   }
-  if(key === "r"){
-    theGame.pieceArray[theGame.currentPiece].clear();
-    if(theGame.pieceArray[theGame.currentPiece] !== PieceO){
-      if(theGame.pieceArray[theGame.currentPiece].currentRotation === theGame.pieceArray[theGame.currentPiece].rotations.length - 1){
-        theGame.pieceArray[theGame.currentPiece].currentRotation = 0;
-      }
-      else {
-        theGame.pieceArray[theGame.currentPiece].currentRotation += 1;
+  if(key === "r"){ //rotates current piece
+    if(theGame.screen === "game"){
+      theGame.pieceArray[theGame.currentPiece].clear();
+      if(theGame.pieceArray[theGame.currentPiece] !== PieceO){
+        if(theGame.pieceArray[theGame.currentPiece].currentRotation === theGame.pieceArray[theGame.currentPiece].rotations.length - 1){
+          theGame.pieceArray[theGame.currentPiece].currentRotation = 0;
+        }
+        else {
+          theGame.pieceArray[theGame.currentPiece].currentRotation += 1;
+        }
       }
     }
   }
